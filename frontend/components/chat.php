@@ -172,7 +172,7 @@ document.addEventListener('DOMContentLoaded', function() {
         showTypingIndicator();
 
         // Query the chatbot backend API
-        fetch('<?php echo str_replace('frontend/', 'backend/api/', web_root); ?>chatbot.php', {
+        fetch('<?php echo str_replace('frontend/', 'backend/api/', web_root); ?>chat.php', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

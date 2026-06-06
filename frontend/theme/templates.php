@@ -14,7 +14,7 @@
   <link href="css/main.css" rel="stylesheet">
   <link href="css/responsive.css" rel="stylesheet">
   <link href="css/darkmode.css" rel="stylesheet">
-  <link href="css/chatbot.css" rel="stylesheet">
+  <link href="css/chat.css" rel="stylesheet">
     <!--[if lt IE 9]>
     <script src="js/html5shiv.js"></script>
     <script src="js/respond.min.js"></script>
@@ -1213,7 +1213,7 @@ function copyExitCoupon(code) {
 
 <?php 
 if (isset($_GET['q']) && $_GET['q'] != 'aishopper' || !isset($_GET['q'])) {
-    include 'components/chatbot.php'; 
+    include 'components/chat.php'; 
 }
 ?>
 </body>
