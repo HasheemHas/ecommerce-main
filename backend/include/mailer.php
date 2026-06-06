@@ -1,23 +1,26 @@
 <?php
-// Load PHPMailer if vendor/autoload.php exists (installed via Composer)
+// PHPMailer — loaded only if vendor/autoload.php exists (installed via Composer)
 // If not installed, email features are disabled but the site still works normally
 $_autoload = dirname(__DIR__) . '/vendor/autoload.php';
 if (file_exists($_autoload)) {
     require_once $_autoload;
-    use PHPMailer\PHPMailer\PHPMailer;
-    use PHPMailer\PHPMailer\Exception as MailException;
 }
 
 class Mailer
 {
     private static $configLoaded = false;
 
+    private static function phpMailerAvailable()
+    {
+        return class_exists('PHPMailer\\PHPMailer\\PHPMailer');
+    }
+
     public static function loadConfig()
     {
         if (self::$configLoaded) {
             return;
         }
-        $local = LIB_PATH . DS . 'mail_config.local.php';
+        $local   = LIB_PATH . DS . 'mail_config.local.php';
         $example = LIB_PATH . DS . 'mail_config.example.php';
         if (file_exists($local)) {
             require_once $local;
@@ -30,8 +33,7 @@ class Mailer
     public static function isConfigured()
     {
         self::loadConfig();
-        // Also check that PHPMailer is actually available
-        if (!class_exists('PHPMailer\\PHPMailer\\PHPMailer')) {
+        if (!self::phpMailerAvailable()) {
             return false;
         }
         return defined('SMTP_ENABLED') && SMTP_ENABLED
@@ -46,30 +48,30 @@ class Mailer
 
         if (!self::isConfigured()) {
             return [
-                'ok' => false,
+                'ok'      => false,
                 'message' => 'Email is not configured or PHPMailer is not installed.',
             ];
         }
 
-        $mail = new PHPMailer(true);
+        $mail = new \PHPMailer\PHPMailer\PHPMailer(true);
         try {
             $mail->isSMTP();
-            $mail->Host = SMTP_HOST;
-            $mail->SMTPAuth = true;
-            $mail->Username = SMTP_USER;
-            $mail->Password = SMTP_PASS;
-            $mail->Port = (int) SMTP_PORT;
-            $mail->SMTPSecure = defined('SMTP_ENCRYPTION') ? SMTP_ENCRYPTION : PHPMailer::ENCRYPTION_STARTTLS;
-            $mail->CharSet = 'UTF-8';
+            $mail->Host       = SMTP_HOST;
+            $mail->SMTPAuth   = true;
+            $mail->Username   = SMTP_USER;
+            $mail->Password   = SMTP_PASS;
+            $mail->Port       = (int) SMTP_PORT;
+            $mail->SMTPSecure = defined('SMTP_ENCRYPTION') ? SMTP_ENCRYPTION : \PHPMailer\PHPMailer\PHPMailer::ENCRYPTION_STARTTLS;
+            $mail->CharSet    = 'UTF-8';
 
             $mail->setFrom(
                 defined('SMTP_FROM_EMAIL') ? SMTP_FROM_EMAIL : SMTP_USER,
-                defined('SMTP_FROM_NAME') ? SMTP_FROM_NAME : 'H-Mart'
+                defined('SMTP_FROM_NAME')  ? SMTP_FROM_NAME  : 'H-Mart'
             );
             $mail->addAddress($toEmail);
             $mail->isHTML(true);
             $mail->Subject = $subject;
-            $mail->Body = $htmlBody;
+            $mail->Body    = $htmlBody;
             $mail->AltBody = $textBody ?: strip_tags($htmlBody);
 
             $mail->send();
