@@ -288,7 +288,7 @@ switch ($setheader) {
       echo  $title="Contact Us";   
     break;
   case 'single-item' :
-      echo  $ $title="Products"  . (isset($subheader) ?  '  |  ' .$subheader: '' ); 
+      echo $title="Products"  . (isset($subheader) ?  '  |  ' .$subheader: '' ); 
     break;
   default :
    echo   $title="Home";  
