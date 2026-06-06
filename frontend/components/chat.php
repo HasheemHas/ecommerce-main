@@ -547,6 +547,20 @@ body.dark-mode .chatbot-input:focus {
 body.dark-mode .chatbot-typing-dot {
     background: #cbd5e1;
 }
+
+/* Responsive styles to prevent layout cut-off */
+@media (max-width: 480px) {
+    .chatbot-panel {
+        right: 12px;
+        bottom: 84px;
+        width: calc(100vw - 24px);
+        height: calc(100vh - 120px);
+    }
+    .chatbot-fab-container {
+        bottom: 16px;
+        right: 16px;
+    }
+}
 </style>
 
 <!-- Floating Action Button -->
@@ -604,7 +618,7 @@ body.dark-mode .chatbot-typing-dot {
 </div>
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
+function initChatbot() {
     const chatbotToggleBtn = document.getElementById('chatbot-toggle-btn');
     const chatbotCloseBtn = document.getElementById('chatbot-close-btn');
     const chatbotPanel = document.getElementById('chatbot-widget-panel');
@@ -614,16 +628,21 @@ document.addEventListener('DOMContentLoaded', function() {
     const pills = document.querySelectorAll('.chatbot-pill');
     let isTyping = false;
 
+    if (!chatbotToggleBtn || !chatbotPanel) return;
+
     // Toggle Chatbot widget visibility
     function toggleChatbot() {
         const isActive = chatbotPanel.classList.toggle('active');
+        const icon = chatbotToggleBtn.querySelector('i');
         if (isActive) {
-            textInput.focus();
+            if (textInput) {
+                textInput.disabled = false;
+                textInput.focus();
+            }
             scrollToBottom();
-            // Pulse animation disabled on toggle open
-            chatbotToggleBtn.querySelector('i').className = 'fa fa-chevron-down';
+            if (icon) icon.className = 'fa fa-chevron-down';
         } else {
-            chatbotToggleBtn.querySelector('i').className = 'fa fa-comments';
+            if (icon) icon.className = 'fa fa-comments';
         }
     }
 
@@ -632,7 +651,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Scroll chat window to bottom
     function scrollToBottom() {
-        chatbotBody.scrollTop = chatbotBody.scrollHeight;
+        if (chatbotBody) chatbotBody.scrollTop = chatbotBody.scrollHeight;
     }
 
     // Parse links in markdown standard format like [text](url) to HTML links
@@ -643,6 +662,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Add message bubble to chat body
     function addMessage(sender, text, products = []) {
+        if (!chatbotBody) return;
         const row = document.createElement('div');
         row.className = `chatbot-msg-row ${sender}`;
         
@@ -673,7 +693,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Show/Hide typing loading indicators
     function showTypingIndicator() {
-        if (document.getElementById('chatbot-typing-loader')) return;
+        if (!chatbotBody || document.getElementById('chatbot-typing-loader')) return;
         
         const row = document.createElement('div');
         row.className = 'chatbot-msg-row bot';
@@ -687,8 +707,8 @@ document.addEventListener('DOMContentLoaded', function() {
         chatbotBody.appendChild(row);
         scrollToBottom();
         isTyping = true;
-        textInput.disabled = true;
-        sendBtn.disabled = true;
+        if (textInput) textInput.disabled = true;
+        if (sendBtn) sendBtn.disabled = true;
     }
 
     function hideTypingIndicator() {
@@ -697,18 +717,18 @@ document.addEventListener('DOMContentLoaded', function() {
             loader.remove();
         }
         isTyping = false;
-        textInput.disabled = false;
-        sendBtn.disabled = false;
-        textInput.focus();
+        if (textInput) textInput.disabled = false;
+        if (sendBtn) sendBtn.disabled = false;
+        if (textInput) textInput.focus();
     }
 
     // Handle sending a message
     window.sendChatMessage = function(customMsg = '') {
-        const msgText = (customMsg || textInput.value).trim();
+        const msgText = (customMsg || (textInput ? textInput.value : '')).trim();
         if (!msgText || isTyping) return;
 
         // Clear input field
-        if (!customMsg) textInput.value = '';
+        if (!customMsg && textInput) textInput.value = '';
 
         // Add user message to screen
         addMessage('user', msgText);
@@ -752,5 +772,12 @@ document.addEventListener('DOMContentLoaded', function() {
             sendChatMessage(query);
         });
     });
-});
+}
+
+// Run immediately if DOM is already loaded, otherwise listen for DOMContentLoaded
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initChatbot);
+} else {
+    initChatbot();
+}
 </script>
