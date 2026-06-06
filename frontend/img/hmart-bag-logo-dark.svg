@@ -1,0 +1,20 @@
+<svg width="170" height="48" viewBox="0 0 170 48" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">H-Mart Bag Logo</title>
+  <desc id="desc">A white H-Mart wordmark with a grocery shopping bag icon for dark backgrounds.</desc>
+  <defs>
+    <linearGradient id="bagFill" x1="8" y1="8" x2="42" y2="44" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#3B82F6"/>
+      <stop offset="1" stop-color="#1D4ED8"/>
+    </linearGradient>
+    <linearGradient id="leafFill" x1="33" y1="17" x2="43" y2="28" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FBBF24"/>
+      <stop offset="1" stop-color="#D97706"/>
+    </linearGradient>
+  </defs>
+  <path d="M13.5 18.5C13.9 15.9 16.1 14 18.8 14H34.2C36.9 14 39.1 15.9 39.5 18.5L42.2 37.1C42.7 40.3 40.2 43.2 36.9 43.2H16.1C12.8 43.2 10.3 40.3 10.8 37.1L13.5 18.5Z" fill="url(#bagFill)"/>
+  <path d="M19.5 17V14.8C19.5 10.9 22.6 7.8 26.5 7.8C30.4 7.8 33.5 10.9 33.5 14.8V17" stroke="#1E3A8A" stroke-width="3.6" stroke-linecap="round"/>
+  <path d="M20.1 17V14.8C20.1 11.2 22.9 8.4 26.5 8.4C30.1 8.4 32.9 11.2 32.9 14.8V17" stroke="#DBEAFE" stroke-width="2.2" stroke-linecap="round"/>
+  <path d="M20 24H24.3V29.2H28.7V24H33V37H28.7V32.2H24.3V37H20V24Z" fill="white"/>
+  <path d="M35.7 17.9C39.7 18.9 42.1 21.7 42.9 25.8C38.8 26.7 35.7 25.1 33.9 21.3C34.4 20 35 18.9 35.7 17.9Z" fill="url(#leafFill)"/>
+  <text x="52" y="33.5" fill="#FFFFFF" font-family="Outfit, Inter, Arial, sans-serif" font-size="26" font-weight="800" letter-spacing="-0.7">H-Mart</text>
+</svg>

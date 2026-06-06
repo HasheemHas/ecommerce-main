@@ -1,0 +1,29 @@
+include/mail_config.local.php
+vendor/
+composer.phar
+composer-setup.php
+
+# Large backup files (13.8 MB - not needed on server)
+backend/backups/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+
+# Dev-only scripts (not needed on production)
+repair.php
+repair2.php
+repair3.php
+repair4.php
+repair5.php
+repair6.php
+fix_bugs.php
+fix_bugs2.php
+fix_avatars.php
+fix_avatars_final.php
+import_catalog.py
+backend/download_real_images.py
+backend/download_lorem_flickr.py
+backend/diversify_images.py
+backend/generate_base_mocks.py
