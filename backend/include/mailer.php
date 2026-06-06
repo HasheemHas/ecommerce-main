@@ -1,8 +1,12 @@
 <?php
-require_once dirname(__DIR__) . '/vendor/autoload.php';
-
-use PHPMailer\PHPMailer\PHPMailer;
-use PHPMailer\PHPMailer\Exception as MailException;
+// Load PHPMailer if vendor/autoload.php exists (installed via Composer)
+// If not installed, email features are disabled but the site still works normally
+$_autoload = dirname(__DIR__) . '/vendor/autoload.php';
+if (file_exists($_autoload)) {
+    require_once $_autoload;
+    use PHPMailer\PHPMailer\PHPMailer;
+    use PHPMailer\PHPMailer\Exception as MailException;
+}
 
 class Mailer
 {
@@ -26,6 +30,10 @@ class Mailer
     public static function isConfigured()
     {
         self::loadConfig();
+        // Also check that PHPMailer is actually available
+        if (!class_exists('PHPMailer\\PHPMailer\\PHPMailer')) {
+            return false;
+        }
         return defined('SMTP_ENABLED') && SMTP_ENABLED
             && defined('SMTP_HOST') && SMTP_HOST !== ''
             && defined('SMTP_USER') && SMTP_USER !== '' && SMTP_USER !== 'your-email@gmail.com'
@@ -39,7 +47,7 @@ class Mailer
         if (!self::isConfigured()) {
             return [
                 'ok' => false,
-                'message' => 'Email is not configured. Copy include/mail_config.example.php to include/mail_config.local.php and add your SMTP settings.',
+                'message' => 'Email is not configured or PHPMailer is not installed.',
             ];
         }
 
@@ -66,8 +74,9 @@ class Mailer
 
             $mail->send();
             return ['ok' => true, 'message' => 'Email sent successfully.'];
-        } catch (MailException $e) {
-            return ['ok' => false, 'message' => 'Could not send email: ' . $mail->ErrorInfo];
+        } catch (\Exception $e) {
+            return ['ok' => false, 'message' => 'Could not send email: ' . $e->getMessage()];
         }
     }
 }
+?>
