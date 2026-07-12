@@ -7,11 +7,11 @@ services:
     startCommand: uvicorn ai_microservice.main:app --host 0.0.0.0 --port $PORT
     envVars:
       - key: DB_HOST
-        value: sql103.infinityfree.com
+        value: buihalkspfwuvlu04ujx-mysql.services.clever-cloud.com
       - key: DB_USER
-        value: if0_42101441
+        value: umk0gm7jacsvmt8
       - key: DB_PASS
-        value: Ujmz9BohZg
+        value: 70FLmaThui6plsJdmxtD
       - key: DB_NAME
-        value: if0_42101441_db_ecommerce
+        value: buihalkspfwuvlu04ujx
     plan: free

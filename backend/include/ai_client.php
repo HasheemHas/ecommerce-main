@@ -7,10 +7,9 @@
  */
 
 // ---------------------------------------------------------------
-// YOUR RENDER API URL — update this after you deploy to Render!
-// Example: https://hmart-ai-api.onrender.com
+// YOUR RENDER API URL — update this to match your actual Render URL!
 // ---------------------------------------------------------------
-define('AI_MICROSERVICE_URL', 'https://hmart-ai-api.onrender.com');
+define('AI_MICROSERVICE_URL', getenv('AI_MICROSERVICE_URL') ?: 'http://127.0.0.1:8000');
 
 class AIClient
 {

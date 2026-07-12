@@ -22,11 +22,11 @@ if ($is_localhost) {
     defined('pass') ? null : define("pass", "");
     defined('database_name') ? null : define("database_name", "db_ecommerce");
 } else {
-    // Production environment (InfinityFree or Cloud DB)
-    $db_server = getenv('DB_HOST') ?: "sql103.infinityfree.com";
-    $db_user   = getenv('DB_USER') ?: "if0_42101441";
-    $db_pass   = getenv('DB_PASS') !== false ? getenv('DB_PASS') : "Ujmz9BohZg";
-    $db_name   = getenv('DB_NAME') ?: "if0_42101441_db_ecommerce";
+    // Production environment (Clever Cloud Database)
+    $db_server = getenv('DB_HOST') ?: "buihalkspfwuvlu04ujx-mysql.services.clever-cloud.com";
+    $db_user   = getenv('DB_USER') ?: "umk0gm7jacsvmt8";
+    $db_pass   = getenv('DB_PASS') !== false ? getenv('DB_PASS') : "70FLmaThui6plsJdmxtD";
+    $db_name   = getenv('DB_NAME') ?: "buihalkspfwuvlu04ujx";
 
     defined('server') ? null : define("server", $db_server);
     defined('user') ? null : define("user", $db_user);
