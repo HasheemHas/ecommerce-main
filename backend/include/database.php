@@ -24,8 +24,9 @@ class Database {
 			if(!$this->conn){
 				echo "Problem in database connection! Contact administrator!<br>";
 				if (defined('server')) {
-					echo "Could not connect to database server: " . htmlspecialchars(server);
+					echo "Could not connect to database server: " . htmlspecialchars(server) . "<br>";
 				}
+				echo "Error Details: " . htmlspecialchars(mysqli_connect_error()) . "<br>";
 				exit();
 			}else{
 				$db_select = @mysqli_select_db($this->conn,database_name);
