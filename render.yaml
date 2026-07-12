@@ -9,7 +9,7 @@ services:
       - key: DB_HOST
         value: buihalkspfwuvlu04ujx-mysql.services.clever-cloud.com
       - key: DB_USER
-        value: umk0gm7jacsvmt8
+        value: umk0gm7jacsvymt8
       - key: DB_PASS
         value: 70FLmaThui6plsJdmxtD
       - key: DB_NAME

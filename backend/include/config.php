@@ -24,7 +24,7 @@ if ($is_localhost) {
 } else {
     // Production environment (Clever Cloud Database)
     $db_server = getenv('DB_HOST') ?: "buihalkspfwuvlu04ujx-mysql.services.clever-cloud.com";
-    $db_user   = getenv('DB_USER') ?: "umk0gm7jacsvmt8";
+    $db_user   = getenv('DB_USER') ?: "umk0gm7jacsvymt8";
     $db_pass   = getenv('DB_PASS') !== false ? getenv('DB_PASS') : "70FLmaThui6plsJdmxtD";
     $db_name   = getenv('DB_NAME') ?: "buihalkspfwuvlu04ujx";
 
