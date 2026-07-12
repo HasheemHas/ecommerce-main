@@ -8,6 +8,7 @@ require_once(dirname(__DIR__) . '/include/initialize.php');
 header('Content-Type: text/html; charset=utf-8');
 
 $sqlFiles = [
+    'Base Database Structure & Core Data' => dirname(__DIR__) . '/db_ecommerce.sql',
     'Migrations Expansion (Translations, Currencies, Logs)' => __DIR__ . '/migrations_expansion.sql',
     'Smart Features (OTP, Browse History, Fraud Alerts)' => __DIR__ . '/smart_features.sql',
     'Admin Dashboard AI (Forecasts, Recommendations, Churn)' => __DIR__ . '/admin_dashboard_ai.sql',

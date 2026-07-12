@@ -47,7 +47,21 @@ if (defined('server') && defined('user') && defined('pass')) {
         
         $db_select = @mysqli_select_db($conn, database_name);
         if ($db_select) {
-            echo "✅ Selected database '" . database_name . "' successfully!\n";
+            echo "✅ Selected database '" . database_name . "' successfully!\n\n";
+            
+            // Query users table
+            echo "--- Checking User Accounts (tbluseraccount) ---\n";
+            $user_res = @mysqli_query($conn, "SELECT USERID, U_NAME, U_USERNAME, U_ROLE, U_PASS FROM tbluseraccount");
+            if ($user_res) {
+                $num_users = mysqli_num_rows($user_res);
+                echo "Total users found: {$num_users}\n";
+                while ($u = mysqli_fetch_assoc($user_res)) {
+                    echo "  - User ID: {$u['USERID']} | Name: {$u['U_NAME']} | Username: {$u['U_USERNAME']} | Role: {$u['U_ROLE']} | Pass Hash: {$u['U_PASS']}\n";
+                }
+            } else {
+                echo "❌ Failed to query tbluseraccount: " . mysqli_error($conn) . "\n";
+            }
+            echo "\n";
         } else {
             echo "❌ Failed to select database: " . mysqli_error($conn) . "\n";
         }
