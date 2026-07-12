@@ -72,11 +72,21 @@ function doInsert(){
 		$customer = New Customer(); 
 		$customer->FNAME 			= $_POST['FNAME'];
 		$customer->LNAME 			= $_POST['LNAME']; 		
+		$customer->MNAME 			= '';
+		$customer->CUSHOMENUM 		= '';
+		$customer->STREETADD		= '';
+		$customer->BRGYADD 			= '';
 		$customer->CITYADD  		= 'Not specified'; 
+		$customer->PROVINCE 		= '';
+		$customer->COUNTRY 			= '';
+		$customer->DBIRTH 			= '2000-01-01';
 		$customer->GENDER 			= 'Male';
 		$customer->PHONE 			= $_POST['PHONE']; 
+		$customer->EMAILADD 		= $_POST['CUSUNAME'];
+		$customer->ZIPCODE 			= 0;
 		$customer->CUSUNAME			= $_POST['CUSUNAME'];
 		$customer->CUSPASS			= sha1($_POST['CUSPASS']);	
+		$customer->CUSPHOTO 		= '';
 		$customer->DATEJOIN 		= date('Y-m-d H:i:s');
 		$customer->TERMS 			= 1; // Auto-verified (no email verification required on InfinityFree)
 
