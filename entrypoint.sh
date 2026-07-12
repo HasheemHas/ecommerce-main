@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# Run database migrations and seed products in Python
+echo "Running Python database migrations..."
+python /var/www/html/backend/db_migration.py
+
 # Start the Python FastAPI microservice in the background
 echo "Starting Python FastAPI Microservice..."
 cd /var/www/html/backend
