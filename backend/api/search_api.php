@@ -1,6 +1,6 @@
 <?php
 $_SERVER['DOCUMENT_ROOT'] = 'C:/xampp/htdocs';
-require_once("../include/initialize.php");
+require_once(dirname(__DIR__) . "/include/initialize.php");
 
 header('Content-Type: application/json');
 

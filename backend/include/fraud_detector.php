@@ -83,25 +83,41 @@ class FraudDetector
         $rapid = $mydb->loadSingleResult();
         $rapidCount = $rapid ? (int)$rapid->cnt : 0;
 
-        // Call Python ML Service
-        $payload = [
-            'customer_id' => $customerId,
-            'order_total' => $orderTotal,
-            'past_order_payments' => $past_payments,
-            'failed_payments_last_hour' => $failedCount,
-            'orders_last_10_minutes' => $rapidCount
-        ];
+        // NATIVE PHP Fraud Detection Algorithm
+        $max_failed_payments = 3;
+        if ($failedCount >= $max_failed_payments) {
+            self::createAlert($customerId, 'failed_payments', 'high', 'Multiple failed payment attempts in the last hour.');
+            return [
+                'allowed' => false,
+                'message' => 'Multiple failed payment attempts in the last hour.'
+            ];
+        }
 
-        $res = MLBridge::runPython('detect_fraud', $payload);
+        if ($rapidCount >= 3) {
+            self::createAlert($customerId, 'rapid_orders', 'high', 'Unusual pattern: 3+ orders within 10 minutes.');
+            return [
+                'allowed' => false,
+                'message' => 'Unusual pattern: 3+ orders within 10 minutes.'
+            ];
+        }
 
-        if ($res && isset($res['ok']) && $res['ok'] && isset($res['fraud_check'])) {
-            $check = $res['fraud_check'];
-            if (!$check['allowed']) {
-                self::createAlert($customerId, $check['alert'], 'high', $check['reason']);
-                return ['allowed' => false, 'message' => $check['reason']];
+        // Z-Score Anomaly Detection on transaction amount
+        if ($customerId > 0 && count($past_payments) >= 3) {
+            $n = count($past_payments);
+            $mean = array_sum($past_payments) / $n;
+            $variance = 0.0;
+            foreach ($past_payments as $x) {
+                $variance += pow($x - $mean, 2);
             }
-            if ($check['risk'] === 'medium') {
-                self::createAlert($customerId, $check['alert'], 'medium', $check['reason']);
+            $variance /= max(1, $n - 1);
+            $std = sqrt($variance);
+            
+            if ($std > 0) {
+                $z_score = ($orderTotal - $mean) / $std;
+                if ($z_score > 3.0 && $orderTotal > 5000) {
+                    $reason = sprintf("Unusual order amount ₹%.2f (Z-Score: %.2f) deviates significantly from customer average (avg: ₹%.2f).", $orderTotal, $z_score, $mean);
+                    self::createAlert($customerId, 'unusual_order_value', 'medium', $reason);
+                }
             }
         }
 

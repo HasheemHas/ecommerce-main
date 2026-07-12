@@ -1,4 +1,4 @@
-<?php check_message(); ?>
+﻿<?php check_message(); ?>
 
 <style>
 /* ── Settings Page Styles ─────────────────────────── */
@@ -328,10 +328,10 @@
 
                 foreach ($cur as $r) {
                     $isAvail  = ($r->PROSTATS == 'Available');
-                    $btnClass = $isAvail ? 'available' : 'notavail';
-                    $btnLabel = $isAvail ? 'Available' : 'Unavailable';
-                    $nextStat = $isAvail ? 'NotAvailable' : 'Available';
-                    $discPct  = $r->PRODISCOUNT > 0 ? $r->PRODISCOUNT . '%' : '—';
+                    $btnClass = $isAvail ₹ 'available' : 'notavail';
+                    $btnLabel = $isAvail ₹ 'Available' : 'Unavailable';
+                    $nextStat = $isAvail ₹ 'NotAvailable' : 'Available';
+                    $discPct  = $r->PRODISCOUNT > 0 ₹ $r->PRODISCOUNT . '%' : '—';
 
                     echo '<tr class="product-row" 
                                data-name="' . strtolower(htmlspecialchars($r->PRODESC)) . '" 
@@ -339,15 +339,15 @@
 
                     echo '<td class="product-name-cell">' . htmlspecialchars($r->PRODESC) . '</td>';
                     echo '<td><span class="category-pill">' . htmlspecialchars($r->CATEGORIES) . '</span></td>';
-                    echo '<td class="price-cell">&#8369;' . number_format($r->PROPRICE, 2) . '</td>';
+                    echo '<td class="price-cell">?' . number_format($r->PROPRICE, 2) . '</td>';
                     echo '<td style="color:#64748b;">' . $discPct . '</td>';
-                    echo '<td class="price-cell" style="color:#1e3a8a;">&#8369;' . number_format($r->PRODISPRICE, 2) . '</td>';
+                    echo '<td class="price-cell" style="color:#1e3a8a;">?' . number_format($r->PRODISPRICE, 2) . '</td>';
 
                     echo '<td>
                         <div class="action-group">
                             <a href="' . web_root . 'admin/settings/controller.php?action=editStatus&id=' . $r->PROID . '&stats=' . $nextStat . '"
                                class="btn-avail ' . $btnClass . '" title="Toggle availability">
-                                <i class="fa fa-' . ($isAvail ? 'check' : 'times') . '"></i> ' . $btnLabel . '
+                                <i class="fa fa-' . ($isAvail ₹ 'check' : 'times') . '"></i> ' . $btnLabel . '
                             </a>
                             <a href="index.php?view=discount&id=' . $r->PROID . '" class="btn-discount" title="Set Discount">
                                 <i class="fa fa-tag"></i> Discount
@@ -392,10 +392,10 @@ function filterProducts() {
         const name = row.dataset.name || '';
         const cat  = row.dataset.cat  || '';
         const show = !q || name.includes(q) || cat.includes(q);
-        row.style.display = show ? '' : 'none';
+        row.style.display = show ₹ '' : 'none';
         if (show) visible++;
     });
 
-    document.getElementById('noResultsMsg').style.display = (visible === 0 && q) ? 'block' : 'none';
+    document.getElementById('noResultsMsg').style.display = (visible === 0 && q) ₹ 'block' : 'none';
 }
 </script>

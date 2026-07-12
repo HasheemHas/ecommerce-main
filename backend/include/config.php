@@ -1,7 +1,9 @@
 <?php
 // Detect if the server environment is localhost (XAMPP)
 $is_localhost = false;
-if (isset($_SERVER['HTTP_HOST'])) {
+if (php_sapi_name() === 'cli') {
+    $is_localhost = true;
+} else if (isset($_SERVER['HTTP_HOST'])) {
     $host = strtolower($_SERVER['HTTP_HOST']);
     if (strpos($host, 'localhost') !== false || strpos($host, '127.0.0.1') !== false || strpos($host, '[::1]') !== false) {
         $is_localhost = true;
@@ -20,15 +22,20 @@ if ($is_localhost) {
     defined('pass') ? null : define("pass", "");
     defined('database_name') ? null : define("database_name", "db_ecommerce");
 } else {
-    // Production environment (InfinityFree)
-    defined('server') ? null : define("server", "sql103.infinityfree.com");
-    defined('user') ? null : define("user", "if0_42101441");
-    defined('pass') ? null : define("pass", "Ujmz9BohZg");
-    defined('database_name') ? null : define("database_name", "if0_42101441_db_ecommerce");
+    // Production environment (InfinityFree or Cloud DB)
+    $db_server = getenv('DB_HOST') ?: "sql103.infinityfree.com";
+    $db_user   = getenv('DB_USER') ?: "if0_42101441";
+    $db_pass   = getenv('DB_PASS') !== false ? getenv('DB_PASS') : "Ujmz9BohZg";
+    $db_name   = getenv('DB_NAME') ?: "if0_42101441_db_ecommerce";
+
+    defined('server') ? null : define("server", $db_server);
+    defined('user') ? null : define("user", $db_user);
+    defined('pass') ? null : define("pass", $db_pass);
+    defined('database_name') ? null : define("database_name", $db_name);
 }
 
 $this_file = str_replace('\\', '/', __File__) ;
-$doc_root = $_SERVER['DOCUMENT_ROOT'];
+$doc_root = isset($_SERVER['DOCUMENT_ROOT']) ? str_replace('\\', '/', $_SERVER['DOCUMENT_ROOT']) : '';
 
 $base_web_root = str_replace (array($doc_root, "backend/include/config.php") , '' , $this_file);
 
@@ -53,4 +60,18 @@ $server_root = str_replace ('backend/include/config.php' ,'', $this_file);
 define ('web_root' , $web_root);
 define('server_root' , $server_root);
 defined('GEMINI_API_KEY') ? null : define('GEMINI_API_KEY', '');
+
+// AI Shopper / NVIDIA API Configuration
+// Get from environment or use fallback
+$nvidia_key = getenv('NVIDIA_API_KEY');
+if (!$nvidia_key && file_exists(dirname(__FILE__) . '/.env.local')) {
+    $env_lines = file(dirname(__FILE__) . '/.env.local', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+    foreach ($env_lines as $line) {
+        if (strpos($line, 'NVIDIA_API_KEY=') === 0) {
+            $nvidia_key = str_replace('NVIDIA_API_KEY=', '', $line);
+            break;
+        }
+    }
+}
+defined('NVIDIA_API_KEY') ? null : define('NVIDIA_API_KEY', $nvidia_key);
 ?>

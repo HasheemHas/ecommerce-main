@@ -1,4 +1,4 @@
-<div class="container">
+﻿<div class="container">
 <div class="panel-body inf-content">
    
 <?php  
@@ -184,7 +184,7 @@
                             </strong>
                         </td>
                         <td class="text-primary">
-                            <?php echo ': '.$singleproduct->PRICE; ?> &#8369 
+                            <?php echo ': '.$singleproduct->PRICE; ?> ₹ 
                         </td>
                     </tr>
 

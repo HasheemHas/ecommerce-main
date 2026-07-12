@@ -83,6 +83,7 @@ function doInsert(){
 						$product->PROQTY		= $_POST['PROQTY'];
 						$product->ORIGINALPRICE	= $_POST['ORIGINALPRICE']; 
 						$product->PROPRICE		= $_POST['PROPRICE']; 
+						$product->INGREDIENTS	= isset($_POST['INGREDIENTS']) ? $_POST['INGREDIENTS'] : '';
 						$product->PROSTATS		= isset($_POST['PROSTATS']) ? $_POST['PROSTATS'] : 'Available';
 						$product->create();
 						// }
@@ -147,6 +148,7 @@ function doInsert(){
 						$product->PROQTY		= $_POST['PROQTY'];
 						$product->ORIGINALPRICE	= $_POST['ORIGINALPRICE']; 
 						$product->PROPRICE		= $_POST['PROPRICE'];  
+						$product->INGREDIENTS	= isset($_POST['INGREDIENTS']) ? $_POST['INGREDIENTS'] : '';
 						$product->PROSTATS		= isset($_POST['PROSTATS']) ? $_POST['PROSTATS'] : 'Available';
 						$product->update($_POST['PROID']);
   

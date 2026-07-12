@@ -18,7 +18,7 @@ if (file_exists($initPath)) {
 }
 
 // Read raw POST body data
-$inputData = file_get_contents('php://input');
+$inputData = file_get_contents(php_sapi_name() === 'cli' ? 'php://stdin' : 'php://input');
 $payload = json_decode($inputData, true);
 
 if (!$payload || !isset($payload['message'])) {
@@ -164,7 +164,7 @@ if ($searchQuery !== null || $matchedCategory !== null || stripos($userMsg, 'pro
         $recommended = [];
         try {
             $recommended = RecommendationEngine::getRecommendations($customerId > 0 ? $customerId : null, 3);
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
             $recommended = [];
         }
         

@@ -1,5 +1,5 @@
 <?php
-require_once("../include/initialize.php");
+require_once(dirname(__DIR__) . "/include/initialize.php");
 
 if (!isset($_SESSION['CUSID'])) {
     message("Please login first to write reviews.", "error");

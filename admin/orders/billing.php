@@ -1,4 +1,4 @@
-<?php
+﻿<?php
    if (!isset($_SESSION['TYPE'])=='Administrator'){
       redirect(web_root."index.php");
      }
@@ -69,7 +69,7 @@
                 if (!empty($_SESSION['fixnmix_cart']) && is_array($_SESSION['fixnmix_cart'])){ 
                       $count_cart = count($_SESSION['fixnmix_cart']);
                       for ($i=0; $i < $count_cart  ; $i++) { 
-                      $query = "SELECT * FROM `tblproducts` p , `tblcategory` c 
+                       $query = "SELECT * FROM `tblproduct` p , `tblcategory` c 
                         WHERE  p.`CATEGORYID`=c.`CATEGORYID` and PRODUCTID='".$_SESSION['fixnmix_cart'][$i]['productid']."'";
                         $mydb->setQuery($query);
                         $cur = $mydb->loadResultList();
@@ -81,8 +81,8 @@
                           <!-- <td><img src="<?php echo web_root.'admin/modules/product/'.$result->IMAGES; ?>" onload="totalprice()" width="50px" height="50px"></td> -->
                           <td><?php echo $result->PRODUCTNAME ?></td>
                           <td><?php echo $_SESSION['fixnmix_cart'][$i]['qty'] ?></td>
-                          <td>&#8369 <?php echo  $result->PRICE ?></td>
-                          <td>&#8369 <output><?php echo $_SESSION['fixnmix_cart'][$i]['price']?></output></td>
+                          <td>₹ <?php echo  $result->PRICE ?></td>
+                          <td>₹ <output><?php echo $_SESSION['fixnmix_cart'][$i]['price']?></output></td>
                         </tr>
               <?php
                         }
@@ -119,9 +119,9 @@
                   <?php } ?>
                 </div>
                 <div class="col-md-6 pull-right">
-                  <!-- <div>Total Price : &#8369 <?php echo number_format($tot,2);?></div> -->
-                  <!-- <div>Delivery Fee : &#8369 <?php echo number_format($price,2); ?></div> -->
-                  <div style="font-weight: bold; font-size: 16px;">Overall Price : &#8369 <?php echo number_format($cur->TOTALPRICE,2); ?></div>
+                  <!-- <div>Total Price : ₹ <?php echo number_format($tot,2);?></div> -->
+                  <!-- <div>Delivery Fee : ₹ <?php echo number_format($price,2); ?></div> -->
+                  <div style="font-weight: bold; font-size: 16px;">Overall Price : ₹ <?php echo number_format($cur->TOTALPRICE,2); ?></div>
                 </div>
               </div>
               <div class="row" style="margin-left:2%"> 

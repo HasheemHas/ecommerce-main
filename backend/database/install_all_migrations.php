@@ -35,25 +35,51 @@ foreach ($sqlFiles as $name => $filePath) {
     echo "<h2>Installing: {$name}...</h2>";
     $sqlContent = file_get_contents($filePath);
     
-    if (mysqli_multi_query($conn, $sqlContent)) {
-        $queriesRun = 0;
-        do {
-            $queriesRun++;
-            // Store / consume the result sets to clear the buffers
-            if ($result = mysqli_store_result($conn)) {
-                mysqli_free_result($result);
+    try {
+        if (mysqli_multi_query($conn, $sqlContent)) {
+            $queriesRun = 0;
+            do {
+                $queriesRun++;
+                // Store / consume the result sets to clear the buffers
+                if ($result = mysqli_store_result($conn)) {
+                    mysqli_free_result($result);
+                }
+            } while (mysqli_next_result($conn));
+            
+            if (mysqli_errno($conn)) {
+                echo "<p style='color:red; font-weight:bold;'>Error during execution: " . mysqli_error($conn) . "</p>";
+            } else {
+                echo "<p style='color:green; font-weight:bold;'>Success: Executed {$queriesRun} statements successfully!</p>";
             }
-        } while (mysqli_next_result($conn));
-        
-        if (mysqli_errno($conn)) {
-            echo "<p style='color:red; font-weight:bold;'>Error during execution: " . mysqli_error($conn) . "</p>";
         } else {
-            echo "<p style='color:green; font-weight:bold;'>Success: Executed {$queriesRun} statements successfully!</p>";
+            echo "<p style='color:red; font-weight:bold;'>Failed to start execution: " . mysqli_error($conn) . "</p>";
         }
-    } else {
-        echo "<p style='color:red; font-weight:bold;'>Failed to start execution: " . mysqli_error($conn) . "</p>";
+    } catch (\Exception $e) {
+        echo "<p style='color:red; font-weight:bold;'>Error during execution: " . $e->getMessage() . "</p>";
     }
     echo "<hr>";
+}
+
+// Check and add membership_tier column to tblcustomer if not exists
+$checkCol = mysqli_query($conn, "SHOW COLUMNS FROM `tblcustomer` LIKE 'membership_tier'");
+if ($checkCol && mysqli_num_rows($checkCol) == 0) {
+    if (mysqli_query($conn, "ALTER TABLE `tblcustomer` ADD COLUMN `membership_tier` VARCHAR(30) DEFAULT 'Silver'")) {
+        echo "<p style='color:green; font-weight:bold;'>Success: Added 'membership_tier' column to 'tblcustomer' table!</p><hr>";
+    } else {
+        echo "<p style='color:red; font-weight:bold;'>Error adding 'membership_tier' column: " . mysqli_error($conn) . "</p><hr>";
+    }
+}
+
+// Run the new PHP product and promo seeder
+echo "<h2>Running dynamic product and promo seeder...</h2>";
+$_GET['run'] = '1';
+try {
+    $original_conn = $conn;
+    require(__DIR__ . '/seed_products.php');
+    $conn = $original_conn;
+    echo "<p style='color:green; font-weight:bold;'>Success: Seeded 3360 dynamic products and generated variant images successfully!</p><hr>";
+} catch (\Exception $e) {
+    echo "<p style='color:red; font-weight:bold;'>Error running product seeder: " . $e->getMessage() . "</p><hr>";
 }
 
 mysqli_close($conn);

@@ -32,9 +32,6 @@ if(isset($_POST['sidebarLogin'])){
            $go = !empty($_SESSION['login_redirect']) ? $_SESSION['login_redirect'] : 'index.php?q=profile';
            unset($_SESSION['login_redirect']);
            redirect(web_root . $go);
-         }else if ($cusres === 'unverified') {
-              message("Your email address has not been verified yet. Please check your inbox for the verification link.", "error");
-              redirect(web_root."index.php?q=login");
          }else{
               message("Invalid Username and Password! Please contact administrator", "error");
               redirect(web_root."index.php");

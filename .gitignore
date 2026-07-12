@@ -27,3 +27,8 @@ backend/download_real_images.py
 backend/download_lorem_flickr.py
 backend/diversify_images.py
 backend/generate_base_mocks.py
+
+# Environment & API Keys (SENSITIVE - never commit)
+.env.local
+backend/include/.env.local
+*.env.local

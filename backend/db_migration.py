@@ -321,7 +321,11 @@ def generate_image_variant(cat_name, base_idx, product_idx, target_path):
                 for c in contrast_levels:
                     combos.append((b, s, c))
         
-        bright_factor, sat_factor, contrast = combos[product_idx % len(combos)]
+        # Use product_idx directly to select combo (product_idx is globally unique
+        # per (base_idx, i) pair, so no two products with the same base image collide)
+        import hashlib
+        combo_seed = int(hashlib.md5(str(product_idx).encode()).hexdigest()[:8], 16)
+        bright_factor, sat_factor, contrast = combos[combo_seed % len(combos)]
         
         # Adjust Brightness and Saturation
         img = ImageEnhance.Brightness(img).enhance(bright_factor)
@@ -331,7 +335,7 @@ def generate_image_variant(cat_name, base_idx, product_idx, target_path):
         img = ImageEnhance.Contrast(img).enhance(contrast)
         
         sharpness_levels = [0.8, 1.0, 1.2, 1.4, 1.6]
-        sharpness = sharpness_levels[product_idx % len(sharpness_levels)]
+        sharpness = sharpness_levels[combo_seed % len(sharpness_levels)]
         result = ImageEnhance.Sharpness(img).enhance(sharpness)
         
         # Save file — vary JPEG quality slightly so file sizes differ and confirm uniqueness
@@ -452,14 +456,14 @@ def main():
                     # Generate unique image filename and physical file.
                     # KEY FIX: base_idx changes on EVERY product (not every 10),
                     # so each product pulls from a different real Unsplash photo.
-                    # product_idx (= i) is passed directly — gives each product a
-                    # unique HSV+contrast+sharpness combo out of 210 possible.
+                    # product_idx (= i) drives MD5-based combo selection so every
+                    # product gets a unique variant even on the same base image.
                     if cat_name == "GROCERY":
                         num_bases = 5
                     else:
                         num_bases = 10
-                    base_idx = (i % num_bases) + 1   # cycles 1..num_bases on every product
-                    product_idx = i                   # unique per product — drives variant combo
+                    base_idx = (i % num_bases) + 1
+                    product_idx = i  # unique per product — drives variant combo via MD5 hash
                     
                     image_filename = f"{cat_name.lower()}_p{i + 1:03d}.jpg"
                     target_path = os.path.join(PHOTOS_DIR, image_filename)

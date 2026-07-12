@@ -1,4 +1,4 @@
-<?php
+﻿<?php
    if (!isset($_SESSION['USERID'])){
       redirect(web_root."index.php");
      }
@@ -53,6 +53,17 @@
                   <div class="form-group">
                     <div class="col-md-8">
                       <label class="col-md-4 control-label" for=
+                      "INGREDIENTS">Ingredients/Details:</label>
+
+                      <div class="col-md-8">
+                      <textarea class="form-control input-sm" id="INGREDIENTS" name="INGREDIENTS" cols="1" rows="2" placeholder="Ingredients or product details (optional)"></textarea>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="form-group">
+                    <div class="col-md-8">
+                      <label class="col-md-4 control-label" for=
                       "CATEGORY">Category:</label>
 
                       <div class="col-md-8">
@@ -87,7 +98,7 @@
 
                       <div class="col-md-3">
                          <input class="form-control input-sm" id="PROPRICE"  step="any" name="PROPRICE" placeholder=
-                            "&#8369 Price " type="number" value="">
+                            "₹ Price " type="number" value="">
                       </div>
                     </div>
                   </div>

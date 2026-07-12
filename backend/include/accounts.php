@@ -1,5 +1,6 @@
 <?php
 require_once(LIB_PATH.DS.'database.php');
+#[AllowDynamicProperties]
 class User {
 	protected static  $tblname = "tbluseraccount";
 

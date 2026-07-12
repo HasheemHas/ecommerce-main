@@ -1,4 +1,4 @@
-	
+﻿	
 <?php
 require_once ("../include/initialize.php");
   if (!isset($_SESSION['CUSID'])){
@@ -53,7 +53,7 @@ $query = "SELECT * FROM `tblsummary` s ,`tblcustomer` c
 // Retrieve customer membership tier
 $mydb->setQuery("SELECT membership_tier FROM tblcustomer WHERE CUSTOMERID = " . (int)$_SESSION['CUSID']);
 $custRow = $mydb->loadSingleResult();
-$tier = ($custRow && !empty($custRow->membership_tier)) ? $custRow->membership_tier : 'Silver';
+$tier = ($custRow && !empty($custRow->membership_tier)) ₹ $custRow->membership_tier : 'Silver';
 
 // Evaluate cancellation eligibility based on tier
 $canCancel = false;
@@ -81,7 +81,7 @@ if (strcasecmp($tier, 'VIP') === 0 || strcasecmp($tier, 'Platinum') === 0) {
 $isWithinReturnWindow = ($daysElapsed <= $maxDays);
 
 // Output HTML debug comment
-echo "<!-- DEBUG VALUES: tier=" . htmlspecialchars($tier) . ", status=" . htmlspecialchars($cur->ORDEREDSTATS) . ", canCancel=" . ($canCancel ? "true" : "false") . ", eligibleStatusForReturn=" . ($eligibleStatusForReturn ? "true" : "false") . ", daysElapsed=" . $daysElapsed . ", maxDays=" . $maxDays . ", isWithinReturnWindow=" . ($isWithinReturnWindow ? "true" : "false") . " -->";
+echo "<!-- DEBUG VALUES: tier=" . htmlspecialchars($tier) . ", status=" . htmlspecialchars($cur->ORDEREDSTATS) . ", canCancel=" . ($canCancel ₹ "true" : "false") . ", eligibleStatusForReturn=" . ($eligibleStatusForReturn ₹ "true" : "false") . ", daysElapsed=" . $daysElapsed . ", maxDays=" . $maxDays . ", isWithinReturnWindow=" . ($isWithinReturnWindow ₹ "true" : "false") . " -->";
 
 // $query = "SELECT * FROM tblusers
 // 				WHERE   `USERID`='".$_SESSION['cus_id']."'";
@@ -293,7 +293,7 @@ echo "<!-- DEBUG VALUES: tier=" . htmlspecialchars($tier) . ", status=" . htmlsp
 		<table id="table" class="table">
 			<thead>
 				<tr>
-					<!-- <th>PRODUCT</th>? -->
+					<!-- <th>PRODUCT</th>₹ -->
 					<th>PRODUCT</th>
 					<!-- <th>DATE ORDER</th>  -->
 					<th>PRICE</th>
@@ -322,10 +322,10 @@ echo "<!-- DEBUG VALUES: tier=" . htmlspecialchars($tier) . ", status=" . htmlsp
 				  		// echo '<td>'. $result->FIRSTNAME.' '. $result->LASTNAME.'</td>';
 				  		echo '<td>'. $result->PRODESC.'</td>';
 				  		// echo '<td>'.date_format(date_create($result->ORDEREDDATE),"M/d/Y h:i:s").'</td>';
-				  		echo '<td> &#8377 '. number_format($result->PROPRICE,2).' </td>';
+				  		echo '<td> ₹ '. number_format($result->PROPRICE,2).' </td>';
 				  		echo '<td align="center" >'. $result->ORDEREDQTY.'</td>';
 				  		?>
-				  		 <td> &#8377 <output><?php echo  number_format($result->ORDEREDPRICE,2); ?></output></td> 
+				  		 <td> ₹ <output><?php echo  number_format($result->ORDEREDPRICE,2); ?></output></td> 
 				  		<?php
 				  		
 				  		// echo '<td id="status" >'. $result->STATS.'</td>';
@@ -366,9 +366,9 @@ echo "<!-- DEBUG VALUES: tier=" . htmlspecialchars($tier) . ", status=" . htmlsp
 
 		  	</div>
 		  	<div class="col-md-6 pull-right">
-		  		<p align="right" style="font-size: 14px; margin-bottom: 6px;">Total Price : <strong>&#8377 <?php echo number_format($subtot,2);?></strong></p>
-		  		<p align="right" style="font-size: 14px; margin-bottom: 6px;">Delivery Fee : <strong>&#8377 <?php echo number_format($price,2); ?></strong></p>
-		  		<p align="right" style="font-size: 16px; color: #1e3a8a; font-weight: 800; margin-top: 10px; border-top: 1px dashed #cbd5e1; padding-top: 8px;">Overall Price : &#8377 <?php echo number_format($cur->PAYMENT,2); ?></p>
+		  		<p align="right" style="font-size: 14px; margin-bottom: 6px;">Total Price : <strong>₹ <?php echo number_format($subtot,2);?></strong></p>
+		  		<p align="right" style="font-size: 14px; margin-bottom: 6px;">Delivery Fee : <strong>₹ <?php echo number_format($price,2); ?></strong></p>
+		  		<p align="right" style="font-size: 16px; color: #1e3a8a; font-weight: 800; margin-top: 10px; border-top: 1px dashed #cbd5e1; padding-top: 8px;">Overall Price : ₹ <?php echo number_format($cur->PAYMENT,2); ?></p>
 		  	</div>
 		  </div>
 		 

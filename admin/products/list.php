@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 check_message(); 
 
 // Fetch Stats for KPI Cards
@@ -259,11 +259,11 @@ $total_categories = $mydb->loadSingleResult()->total;
         <div class="table-toolbar">
             <div class="table-tabs">
                 <?php
-                $status = isset($_GET['status']) ? $_GET['status'] : 'Active';
+                $status = isset($_GET['status']) ₹ $_GET['status'] : 'Active';
                 ?>
-                <a href="index.php?status=Active" style="text-decoration:none;"><span class="<?php echo ($status == 'Active') ? 'active' : ''; ?>">Active</span></a>
-                <a href="index.php?status=Draft" style="text-decoration:none;"><span class="<?php echo ($status == 'Draft') ? 'active' : ''; ?>">Draft</span></a>
-                <a href="index.php?status=Archived" style="text-decoration:none;"><span class="<?php echo ($status == 'Archived') ? 'active' : ''; ?>">Archived</span></a>
+                <a href="index.php?status=Active" style="text-decoration:none;"><span class="<?php echo ($status == 'Active') ₹ 'active' : ''; ?>">Active</span></a>
+                <a href="index.php?status=Draft" style="text-decoration:none;"><span class="<?php echo ($status == 'Draft') ₹ 'active' : ''; ?>">Draft</span></a>
+                <a href="index.php?status=Archived" style="text-decoration:none;"><span class="<?php echo ($status == 'Archived') ₹ 'active' : ''; ?>">Archived</span></a>
             </div>
             <div>
                 <button type="submit" class="btn btn-danger btn-sm" name="delete" style="border-radius: 8px;"><i class="fa fa-trash"></i> Delete Selected</button>
@@ -286,7 +286,7 @@ $total_categories = $mydb->loadSingleResult()->total;
                 </thead>
                 <tbody>
                     <?php 
-                    $status = isset($_GET['status']) ? $_GET['status'] : 'Active';
+                    $status = isset($_GET['status']) ₹ $_GET['status'] : 'Active';
                     $db_status = 'Available';
                     if ($status == 'Draft') {
                         $db_status = 'NotAvailable';
@@ -335,7 +335,7 @@ $total_categories = $mydb->loadSingleResult()->total;
                             <span class="desc-text"><?php echo strip_tags($result->PRODESC); ?></span>
                         </td>
                         <td>
-                            <strong style="color: var(--text-main); font-size: 14px;">&#8369; <?php echo number_format($result->PROPRICE, 2); ?></strong>
+                            <strong style="color: var(--text-main); font-size: 14px;">₹ <?php echo number_format($result->PROPRICE, 2); ?></strong>
                         </td>
                         <td>
                             <?php if($result->PRODISCOUNT > 0): ?>

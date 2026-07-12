@@ -1,4 +1,4 @@
-
+﻿
 <?php 
 	 if (!isset($_SESSION['U_ROLE'])=='Administrator'){
       redirect(web_root."admin/index.php");
@@ -14,10 +14,10 @@
 		<h3>Date Filter :: </h3>
 		</div>
 		 <div class="form-group">
-		 <input class="form-control date start input-lg" size="20" type="date" value="<?php echo (isset($_POST['start'])) ? $_POST['start'] : ''; ?>" Placeholder="Check In" name="start" id="from" data-date="" data-date-format="yyyy-mm-dd" data-link-field="any" data-link-format="yyyy-mm-dd">
+		 <input class="form-control date start input-lg" size="20" type="date" value="<?php echo (isset($_POST['start'])) ₹ $_POST['start'] : ''; ?>" Placeholder="Check In" name="start" id="from" data-date="" data-date-format="yyyy-mm-dd" data-link-field="any" data-link-format="yyyy-mm-dd">
 		 </div>
 		  <div class="form-group"> 
-		      <input class="form-control date end input-lg" size="20" type="date" value="<?php echo (isset($_POST['end'])) ? $_POST['end'] : ''; ?>"  name="end" id="end" data-date="" data-date-format="yyyy-mm-dd" data-link-field="any" data-link-format="yyyy-mm-dd">
+		      <input class="form-control date end input-lg" size="20" type="date" value="<?php echo (isset($_POST['end'])) ₹ $_POST['end'] : ''; ?>"  name="end" id="end" data-date="" data-date-format="yyyy-mm-dd" data-link-field="any" data-link-format="yyyy-mm-dd">
 		  </div>
 		  
 		  <button type="submit" name="submit" class="btn btn_kcctc btn-lg"><span class="glyphicon glyphicon-search"></span></button>
@@ -26,7 +26,7 @@
  
 <form  method="post" action="<?php echo $_SERVER['PHP_SELF'] ?>">
 <span id="printout">
-<div class="row" ><h3 align="center">Overall Income in <?php echo ((@$_POST['start']) ? $_POST['start'] : '') . ' to ' .  ((@$_POST['end']) ? $_POST['end'] : '');?></h3></div>
+<div class="row" ><h3 align="center">Overall Income in <?php echo ((@$_POST['start']) ₹ $_POST['start'] : '') . ' to ' .  ((@$_POST['end']) ₹ $_POST['end'] : '');?></h3></div>
 <table  class="table table-bordered" cellspacing="0">
 <thead>
 <tr bgcolor="#bbd43b">
@@ -85,7 +85,7 @@ if(isset($_POST['submit'])){
 </table>
 <table>
 	<tfoot style="margin-right:10%">
-<tr> <h4 align="right"> Overall Price : &#8369 <?php echo isset( $overall) ? $overall : 0; ?></h4>  </tr>
+<tr> <h4 align="right"> Overall Price : ₹ <?php echo isset( $overall) ₹ $overall : 0; ?></h4>  </tr>
 	
 </tfoot>
 </table>

@@ -1,4 +1,4 @@
- <?php
+﻿ <?php
 
    if (!isset($_SESSION['TYPE'])=='Administrator'){
       redirect(web_root."index.php");
@@ -35,12 +35,12 @@
               <tbody>
                 <tr>
                 <td width="100px">First Name </td><td  width="350px"> 
-                         <input  id="FIRSTNAME" name="FIRSTNAME"  class="form-control input-sm"  type="text" value="<?php echo isset($_SESSION['FIRSTNAME'])? $_SESSION['FIRSTNAME'] : ""; ?>"></td>
-                <td width="100px">Last Name</td><td> <input  id="LASTNAME" name="LASTNAME"  class="form-control input-sm"  type="text" value="<?php echo isset($_SESSION['LASTNAME'])? $_SESSION['LASTNAME'] : ""; ?>"></td>
+                         <input  id="FIRSTNAME" name="FIRSTNAME"  class="form-control input-sm"  type="text" value="<?php echo isset($_SESSION['FIRSTNAME'])₹ $_SESSION['FIRSTNAME'] : ""; ?>"></td>
+                <td width="100px">Last Name</td><td> <input  id="LASTNAME" name="LASTNAME"  class="form-control input-sm"  type="text" value="<?php echo isset($_SESSION['LASTNAME'])₹ $_SESSION['LASTNAME'] : ""; ?>"></td>
                 </tr>
                 <tr>
-                <td>Address </td><td> <input  id="ADDRESS" name="ADDRESS"  class="form-control input-sm"  type="text" value="<?php echo isset($_SESSION['ADDRESS'])? $_SESSION['ADDRESS'] : ""; ?>"></td>
-                 <td  width="100px">Contact Number  </td><td  width="350px"> <input  id="CONTACTNUMBER" name="CONTACTNUMBER"  class="form-control input-sm"  type="number" value="<?php  echo isset($_SESSION['CONTACTNUMBER'])? $_SESSION['CONTACTNUMBER'] : "";?>"></td>
+                <td>Address </td><td> <input  id="ADDRESS" name="ADDRESS"  class="form-control input-sm"  type="text" value="<?php echo isset($_SESSION['ADDRESS'])₹ $_SESSION['ADDRESS'] : ""; ?>"></td>
+                 <td  width="100px">Contact Number  </td><td  width="350px"> <input  id="CONTACTNUMBER" name="CONTACTNUMBER"  class="form-control input-sm"  type="number" value="<?php  echo isset($_SESSION['CONTACTNUMBER'])₹ $_SESSION['CONTACTNUMBER'] : "";?>"></td>
               </tr>        
               </tbody> 
              <tfoot><tr><td></td></tr></tfoot>
@@ -63,7 +63,7 @@
                 if (!empty($_SESSION['fixnmix_cart']) && is_array($_SESSION['fixnmix_cart'])){ 
                       $count_cart = count($_SESSION['fixnmix_cart']);
                       for ($i=0; $i < $count_cart  ; $i++) { 
-                      $query = "SELECT * FROM `tblproducts` p , `tblcategory` c 
+                       $query = "SELECT * FROM `tblproduct` p , `tblcategory` c 
                         WHERE  p.`CATEGORYID`=c.`CATEGORYID` and PRODUCTID='".$_SESSION['fixnmix_cart'][$i]['productid']."'";
                         $mydb->setQuery($query);
                         $cur = $mydb->loadResultList();
@@ -75,8 +75,8 @@
                           <td><img src="<?php echo web_root.'admin/modules/product/'.$result->IMAGES; ?>" onload="totalprice()" width="50px" height="50px"></td>
                           <td><?php echo $result->PRODUCTNAME ?></td>
                           <td><?php echo $_SESSION['fixnmix_cart'][$i]['qty'] ?></td>
-                          <td>&#8369 <?php echo  $result->PRICE ?></td>
-                          <td>&#8369 <output><?php echo $_SESSION['fixnmix_cart'][$i]['price']?></output></td>
+                          <td>₹ <?php echo  $result->PRICE ?></td>
+                          <td>₹ <output><?php echo $_SESSION['fixnmix_cart'][$i]['price']?></output></td>
                         </tr>
               <?php
                         }
@@ -90,7 +90,7 @@
               </table>
 
             <div class="container"> 
-              <div class="row"> <h3  align="right" margin-right="20%">Total Price : &#8369 <span  id="sum">0.00</span></h3></div>  
+              <div class="row"> <h3  align="right" margin-right="20%">Total Price : ₹ <span  id="sum">0.00</span></h3></div>  
                 </div>
            
                 <?php 

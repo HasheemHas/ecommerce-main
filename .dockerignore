@@ -1,0 +1,12 @@
+.git
+.gitignore
+.dockerignore
+backend/ai_microservice/__pycache__/
+backend/ai_microservice/venv/
+backend/ai_microservice/env/
+backend/include/.env.local
+Dockerfile
+README.md
+AI_SHOPPER_SETUP.md
+INFINITYFREE_UPLOAD_CHECKLIST.md
+*.log

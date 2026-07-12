@@ -706,7 +706,7 @@
                 <button class="attach-btn" title="Add photos, videos, or files" onclick="document.getElementById('fileUpload').click()">
                     <i class="fa fa-plus"></i>
                 </button>
-                <input type="file" id="fileUpload" style="display: none;" multiple onchange="handleFileUpload(event)">
+                <input type="file" id="fileUpload" style="display: none;" accept="image/*" multiple onchange="handleFileUpload(event)">
                 <input type="text" id="chatInput" class="shopper-input" placeholder="Ask me to find anything..." onkeypress="handleEnter(event)">
             </div>
             <button class="send-btn" style="background-color: #64748b; margin-right: 2px;" onclick="searchCatalogFromChat()" title="Search catalog"><i class="fa fa-search"></i></button>
@@ -744,6 +744,7 @@
 
     // Start a brand new session
     function startNewSession() {
+        attachedImages = [];
         currentSessionId = generateId();
         const newSession = {
             id: currentSessionId,
@@ -984,18 +985,63 @@
         sendMessage();
     }
 
+    let attachedImages = [];
+    const MAX_IMAGE_SIZE = 5 * 1024 * 1024; // 5 MB per image
+
     function handleFileUpload(event) {
         const files = event.target.files;
         if (files.length > 0) {
-            const input = document.getElementById('chatInput');
-            // Check if there's already text to append, else just show the filename
-            const fileNameStr = Array.from(files).map(f => `[📎 ${f.name}]`).join(' ');
-            if (input.value.trim() === '') {
-                input.value = fileNameStr + ' ';
-            } else {
-                input.value += ' ' + fileNameStr + ' ';
-            }
-            input.focus();
+            const validFiles = Array.from(files).filter(file => {
+                if (!file.type.startsWith('image/')) {
+                    showToast("Skipped", `${file.name} is not an image. Only images are supported.`, "warning");
+                    return false;
+                }
+                if (file.size > MAX_IMAGE_SIZE) {
+                    showToast("Skipped", `${file.name} exceeds the 5MB limit.`, "warning");
+                    return false;
+                }
+                return true;
+            });
+
+            if (validFiles.length === 0) return;
+
+            const readerPromises = validFiles.map(file => {
+                return new Promise((resolve) => {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const dataUrl = e.target.result;
+                        attachedImages.push({
+                            name: file.name,
+                            mime: file.type,
+                            data: dataUrl
+                        });
+                        resolve(dataUrl);
+                    };
+                    reader.onerror = function() {
+                        showToast("Error", `Failed to read ${file.name}.`, "error");
+                        resolve(null);
+                    };
+                    reader.readAsDataURL(file);
+                });
+            });
+
+            Promise.all(readerPromises).then(() => {
+                const names = attachedImages.map(img => `[📎 ${img.name}]`).join(' ');
+                const input = document.getElementById('chatInput');
+                if (input.value.trim() === '') {
+                    input.value = names + ' ';
+                } else {
+                    input.value += ' ' + names + ' ';
+                }
+                input.focus();
+                // Auto-switch to vision model when images are attached
+                const selector = document.getElementById('modelSelector');
+                if (selector && selector.value !== 'meta/llama-3.2-11b-vision-instruct') {
+                    selector.value = 'meta/llama-3.2-11b-vision-instruct';
+                    saveModelPreference(selector.value);
+                    showToast("Model Switched", "Switched to Llama 3.2 Vision for image analysis.", "success");
+                }
+            });
         }
     }
 
@@ -1227,35 +1273,66 @@
         try {
             // Call Llama API via proxy
             const selectedModel = document.getElementById('modelSelector') ? document.getElementById('modelSelector').value : 'meta/llama-3.1-8b-instruct';
+            
+            // Include attached images if any
+            const imagesToSend = attachedImages.length > 0 ? attachedImages.map(img => ({
+                name: img.name,
+                mime: img.mime,
+                data: img.data
+            })) : [];
+            
+            // Use vision model when images are attached (safeguard even if auto-switch failed)
+            const finalModel = imagesToSend.length > 0 ? 'meta/llama-3.2-11b-vision-instruct' : selectedModel;
+            
             const response = await fetch('api_chat.php', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     message: message,
                     history: session.messages.slice(-10), // Send last 10 messages for context
-                    model: selectedModel
+                    model: finalModel,
+                    images: imagesToSend
                 })
             });
             
-            const data = await response.json();
             typingIndicator.style.display = 'none';
+            
+            // Clear attached images after sending
+            attachedImages = [];
             
             let aiText = "I'm sorry, I encountered an error connecting to the AI core.";
             let products = [];
             
-            if (data.choices && data.choices[0] && data.choices[0].message) {
-                aiText = data.choices[0].message.content;
-                products = data.products || [];
-                const imgUrl = data.generated_image_url || null;
-                session.messages.push({ role: 'assistant', content: aiText, products: products, generated_image_url: imgUrl });
-                saveSessions();
-                
-                // Track actual real-time token usage from API
-                if (data.usage && data.usage.total_tokens) {
-                    incrementApiUsage(data.usage.total_tokens);
+            if (!response.ok) {
+                const responseText = await response.text();
+                console.error("HTTP Error:", response.status, responseText);
+                aiText = "Server error (" + response.status + "). The image might be too large — try a smaller file.";
+            } else {
+                let data;
+                try {
+                    data = await response.json();
+                } catch (e) {
+                    const rawText = await response.text();
+                    console.error("JSON Parse Error:", e, "Response:", rawText);
+                    aiText = "Invalid response from server. Check console for details.";
+                    data = null;
                 }
-            } else if (data.error) {
-                console.error("API Error:", data.error, data.details);
+                
+                if (data && data.choices && data.choices[0] && data.choices[0].message) {
+                    aiText = data.choices[0].message.content;
+                    products = data.products || [];
+                    const imgUrl = data.generated_image_url || null;
+                    session.messages.push({ role: 'assistant', content: aiText, products: products, generated_image_url: imgUrl });
+                    saveSessions();
+                    
+                    // Track actual real-time token usage from API
+                    if (data.usage && data.usage.total_tokens) {
+                        incrementApiUsage(data.usage.total_tokens);
+                    }
+                } else if (data && data.error) {
+                    console.error("API Error:", data.error, data.details);
+                    aiText = "Error: " + data.error + (data.details ? " (" + data.details + ")" : "");
+                }
             }
 
             let productsHtml = '';
@@ -1341,5 +1418,5 @@
     });
     
     // Initialize on load
-    window.onload = init;
+    window.addEventListener('load', init);
 </script>

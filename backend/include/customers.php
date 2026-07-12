@@ -1,5 +1,6 @@
 <?php
 require_once(LIB_PATH.DS.'database.php');
+#[AllowDynamicProperties]
 class Customer {
 	protected static  $tblname = "tblcustomer";
 
@@ -41,9 +42,6 @@ class Customer {
 		$row_count = $mydb->num_rows($cur);//get the number of count
 		 if ($row_count >= 1){
 			 $user_found = $mydb->loadSingleResult();
-			 if ((int)$user_found->TERMS === 0) {
-				 return 'unverified';
-			 }
 		 	$_SESSION['CUSID']   		= $user_found->CUSTOMERID;
 		 	$_SESSION['CUSNAME']      	= $user_found->FNAME . ' ' .$user_found->LNAME;
 		 	$_SESSION['CUSUNAME'] 		= $user_found->CUSUNAME; 

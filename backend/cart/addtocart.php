@@ -1,4 +1,4 @@
-<?php  
+﻿<?php  
 
  
 
@@ -10,8 +10,8 @@ if (isset($_POST['updateid'])){
 
       $pid=$_SESSION['fixnmix_cart'][$i]['productid'];
  
-      $qty=intval(isset($_GET['QTY'.$pid]) ? $_GET['QTY'.$_POST['updateid']] : "");
-       $price=(double)(isset($_GET['subTOT'.$pid]) ? $_GET['subTOT'.$_POST['updateid']] : "");
+      $qty=intval(isset($_GET['QTY'.$pid]) ₹ $_GET['QTY'.$_POST['updateid']] : "");
+       $price=(double)(isset($_GET['subTOT'.$pid]) ₹ $_GET['subTOT'.$_POST['updateid']] : "");
 
 
        $sql = "SELECT * FROM `tblproducts` WHERE `PRODUCTID` ='" . $pid. "'";
@@ -66,7 +66,7 @@ if (isset($_POST['updateid'])){
           <div class="panel-body">  
             <fieldset>  
               <legend><h2 class="text-left">Cart List</h2></legend>
-          <div>Every products has a mininum price of &#8369 50.00 each to be able to order.</div>
+          <div>Every products has a mininum price of ₹ 50.00 each to be able to order.</div>
       <div class="table-responsive">
        <div  class="fixnmix_scroll_carttwo" >
           <table  class="table fixnmix-table" id="table" >
@@ -102,9 +102,9 @@ if (isset($_POST['updateid'])){
                         <td></td>
                         <td><img src="<?php echo web_root.'admin/modules/product/'.$result->IMAGES; ?>"   width="50px" height="50px"></td>
                         <td><?php echo $result->PRODUCTNAME ?></td>
-                        <td>&#8369 <?php echo number_format($result->PRICE,2) ?></td>
+                        <td>₹ <?php echo number_format($result->PRICE,2) ?></td>
                         <td><input type="NUMBER" data-id="<?php echo $result->PRODUCTID;  ?>" class="cusqty" name="QTY<?php echo $result->PRODUCTID;  ?>" id="QTY<?php echo $result->PRODUCTID; ?>"  value="<?php echo $_SESSION['fixnmix_cart'][$i]['qty'] ?>"/>
-                        <td>&#8369 <output id="Osubtot<?php echo $result->PRODUCTID ?>"><?php echo   $_SESSION['fixnmix_cart'][$i]['price'] ; ?></output>
+                        <td>₹ <output id="Osubtot<?php echo $result->PRODUCTID ?>"><?php echo   $_SESSION['fixnmix_cart'][$i]['price'] ; ?></output>
 
                         <!-- hidden textbox -->
                         <input type="hidden" name="TOT<?php echo $result->PRODUCTID;  ?>" id="TOT<?php echo $result->PRODUCTID; ?>"  value="<?php echo $_SESSION['fixnmix_cart'][$i]['price'] ?>"/></td>
@@ -129,7 +129,7 @@ if (isset($_POST['updateid'])){
                   </div>
                   <table  >
                   <tfoot >
-                     <strong><h1 align="right">Total Price : &#8369 <span style="margin-right:3%"  id="sum">0.00</span></h1></strong></td>
+                     <strong><h1 align="right">Total Price : ₹ <span style="margin-right:3%"  id="sum">0.00</span></h1></strong></td>
          
                   </tfoot>
                   </table> 
@@ -141,7 +141,7 @@ if (isset($_POST['updateid'])){
 
                               echo  '<form action="index.php?page=7" method="post">';
                              echo '<a href="index.php?page=2" class="btn btn-default"><span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<strong>Add Another Products</strong></a>';
-                                $countcart =isset($_SESSION['fixnmix_cart'])? count($_SESSION['fixnmix_cart']) : "0";
+                                $countcart =isset($_SESSION['fixnmix_cart'])₹ count($_SESSION['fixnmix_cart']) : "0";
                                  if ($countcart > 0){
                 
                                 if (isset($_SESSION['cus_id'])){  
@@ -183,7 +183,7 @@ if (isset($_POST['updateid'])){
                   <button class="close" data-dismiss="modal" type=
                   "button">×</button>
 
-                  <h4 class="modal-title" id="myModalLabel">Have already an account?</h4>
+                  <h4 class="modal-title" id="myModalLabel">Have already an account₹</h4>
                 </div>
  
                   <div class="modal-body" > 
@@ -225,7 +225,7 @@ if (isset($_POST['updateid'])){
                        <div class="tab-pane" id="settings"><br/><br/>
                 <form  class="form-horizontal span6" action="../backend/customer/controller.php?action=add" onsubmit="return  validatecustomer()" name="personal" method="POST" enctype="multipart/form-data" autocomplete="off">
                            <?php 
-              // echo isset($_POST['FIRSTNAME'])? 'yes' : '';
+              // echo isset($_POST['FIRSTNAME'])₹ 'yes' : '';
               $autonum = New Autonumber();
               $res = $autonum->single_autonumber(1);
 

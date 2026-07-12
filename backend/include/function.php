@@ -161,7 +161,7 @@
 			$mydb = new Database();
 		}
 		
-		$currency = isset($_SESSION['currency']) ? $_SESSION['currency'] : 'PHP';
+		$currency = isset($_SESSION['currency']) ? $_SESSION['currency'] : 'INR';
 		
 		static $currencies_cache = [];
 		if (empty($currencies_cache)) {
@@ -180,7 +180,7 @@
 			return $curr_obj->currency_symbol . ' ' . number_format($converted, 2);
 		}
 		
-		return '₱ ' . number_format($price, 2);
+		return '₹ ' . number_format($price, 2);
 	}
 		
 ?>

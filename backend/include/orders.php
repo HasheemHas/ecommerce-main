@@ -1,5 +1,6 @@
 <?php
 require_once(LIB_PATH.DS.'database.php');
+#[AllowDynamicProperties]
 class Order {
 	protected static  $tblname = "tblorder";
 

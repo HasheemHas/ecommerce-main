@@ -1,22 +1,48 @@
 <?php
 header('Content-Type: application/json');
 
-require_once("../backend/include/initialize.php");
+// Allow larger POST bodies for base64 images (up to 20MB)
+ini_set('post_max_size', '20M');
+ini_set('upload_max_filesize', '20M');
+ini_set('memory_limit', '256M');
+ini_set('max_execution_time', 120);
+
+// Catch all errors/fatal errors and return as JSON
+error_reporting(E_ALL);
+ini_set('display_errors', 0);
+register_shutdown_function(function() {
+    $error = error_get_last();
+    if ($error && in_array($error['type'], [E_ERROR, E_PARSE, E_CORE_ERROR, E_COMPILE_ERROR])) {
+        if (ob_get_length()) ob_clean();
+        echo json_encode(['error' => 'Server error: ' . $error['message'], 'details' => $error['file'] . ':' . $error['line']]);
+    }
+});
+set_error_handler(function($severity, $message, $file, $line) {
+    echo json_encode(['error' => $message, 'details' => $file . ':' . $line]);
+    exit;
+});
+
+require_once(dirname(__DIR__) . "/backend/include/initialize.php");
 global $mydb;
 
-$apiKey = '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';
-$url = 'https://integrate.api.nvidia.com/v1/chat/completions';
-
-$data = json_decode(file_get_contents('php://input'), true);
-$model = isset($data['model']) ? $data['model'] : 'meta/llama-3.1-8b-instruct';
-
+$input = file_get_contents(php_sapi_name() === 'cli' ? 'php://stdin' : 'php://input');
+$data = json_decode($input, true);
 if (!$data || !isset($data['message'])) {
     echo json_encode(['error' => 'No message provided']);
     exit;
 }
 
+$model = isset($data['model']) ? $data['model'] : 'meta/llama-3.1-8b-instruct';
 $history = isset($data['history']) ? $data['history'] : [];
 $newMessage = $data['message'];
+$images = isset($data['images']) ? $data['images'] : [];
+
+$apiKey = defined('NVIDIA_API_KEY') ? NVIDIA_API_KEY : getenv('NVIDIA_API_KEY');
+$use_fallback = false;
+if (!$apiKey) {
+    $use_fallback = true;
+}
+$url = 'https://integrate.api.nvidia.com/v1/chat/completions';
 
 // Detect image generation request
 $isImageRequest = false;
@@ -150,7 +176,25 @@ foreach ($history as $msg) {
     }
 }
 
-$messages[] = ['role' => 'user', 'content' => $newMessage];
+// Build user message content - array format if images attached, string otherwise
+$userContent = $newMessage;
+if (!empty($images)) {
+    $contentParts = [];
+    if (!empty($newMessage)) {
+        $contentParts[] = ['type' => 'text', 'text' => $newMessage];
+    } else {
+        $contentParts[] = ['type' => 'text', 'text' => 'Analyze this image and describe what you see. If it looks like a product, identify it and help me find similar items in our catalog.'];
+    }
+    foreach ($images as $img) {
+        $contentParts[] = [
+            'type' => 'image_url',
+            'image_url' => ['url' => $img['data']]
+        ];
+    }
+    $userContent = $contentParts;
+}
+
+$messages[] = ['role' => 'user', 'content' => $userContent];
 
 $postData = [
     'model' => $model,
@@ -159,25 +203,145 @@ $postData = [
     'max_tokens' => 1024
 ];
 
-$ch = curl_init($url);
-curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-curl_setopt($ch, CURLOPT_POST, true);
-curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($postData));
-curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
-curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
-curl_setopt($ch, CURLOPT_TIMEOUT, 45);
-curl_setopt($ch, CURLOPT_HTTPHEADER, [
-    'Content-Type: application/json',
-    'Authorization: Bearer ' . $apiKey
-]);
+$response = false;
+$curlError = "";
+$httpCode = 0;
 
-$response = curl_exec($ch);
-$httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-curl_close($ch);
+// Try up to 2 times: first with images (if any), then without images as fallback
+$retry_without_images = false;
 
-if ($httpCode !== 200) {
-    echo json_encode(['error' => 'API Error: ' . $httpCode, 'details' => json_decode($response)]);
+if (!$use_fallback) {
+    $ch = curl_init($url);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_POST, true);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($postData));
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+    curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
+    curl_setopt($ch, CURLOPT_TIMEOUT, 45);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, [
+        'Content-Type: application/json',
+        'Authorization: Bearer ' . $apiKey
+    ]);
+
+    $response = curl_exec($ch);
+    $curlError = curl_error($ch);
+    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    curl_close($ch);
+
+    // If model doesn't support image input, retry without images
+    if ($httpCode === 200 && !empty($images)) {
+        $respData = json_decode($response, true);
+        $respContent = $respData['choices'][0]['message']['content'] ?? '';
+        if (stripos($respContent, 'does not support image') !== false) {
+            $retry_without_images = true;
+        }
+    }
+    
+    // If API request failed entirely
+    if ($curlError || $httpCode !== 200) {
+        $use_fallback = true;
+    }
+}
+
+// Retry without images if vision model isn't supported
+if ($retry_without_images && !$use_fallback) {
+    $images = []; // Strip images
+    // Rebuild message as plain text
+    $userContent = $newMessage ?: "I uploaded an image. Please help me find products similar to what's in the image.";
+    $messages[count($messages) - 1]['content'] = $userContent;
+    // Use standard text model
+    $postData['model'] = 'meta/llama-3.1-8b-instruct';
+    $postData['messages'] = $messages;
+    
+    $ch = curl_init($url);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_POST, true);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($postData));
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+    curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
+    curl_setopt($ch, CURLOPT_TIMEOUT, 45);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, [
+        'Content-Type: application/json',
+        'Authorization: Bearer ' . $apiKey
+    ]);
+    
+    $response = curl_exec($ch);
+    $curlError = curl_error($ch);
+    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    curl_close($ch);
+    
+    if ($curlError || $httpCode !== 200) {
+        $use_fallback = true;
+    }
+}
+
+if ($use_fallback) {
+    // Fallback NLP Engine
+    $userMsgLower = strtolower($newMessage);
+    $responseText = "";
+
+    if (preg_match('/\b(hi|hello|hey|greetings|greet|good morning|good afternoon)\b/i', $userMsgLower)) {
+        $responseText = "Hello! 👋 I am your H-Mart AI Assistant. How can I help you today?<br><br>" .
+                        "Here are some things I can help you with:<br>" .
+                        "• 🔍 <b>Search products:</b> Try searching for items (e.g. \"show me shoes\" or \"find bags\")<br>" .
+                        "• 🛒 <b>Check your cart:</b> Ask \"what is in my cart?\"<br>" .
+                        "• 💳 Ask about our <b>shipping or return policies</b>";
+    } elseif (preg_match('/\b(return|refund|exchange|replace)\b/i', $userMsgLower)) {
+        $responseText = "💳 <b>H-Mart Return & Refund Policy:</b><br><br>" .
+                        "We offer a <b>30-day money-back guarantee</b> for all items. Products must be unused, in their original packaging, and accompanied by the receipt.<br><br>" .
+                        "To initiate a return, please contact support at <b>support@hmart.com</b>.";
+    } elseif (preg_match('/\b(shipping|delivery|deliver|shipping fee|delivery fee|cost|charge)\b/i', $userMsgLower)) {
+        $responseText = "🚚 <b>H-Mart Shipping & Delivery Information:</b><br><br>" .
+                        "• <b>Kabankalan City:</b> ₹50 delivery fee (1-2 business days)<br>" .
+                        "• <b>Himamaylan City:</b> ₹70 delivery fee (1-2 business days)<br>" .
+                        "• <b>Free Shipping:</b> For orders totaling ₹2000 or more.<br><br>" .
+                        "Orders are packed fresh and dispatched directly to your address.";
+    } elseif (preg_match('/\b(contact|support|customer service|email|phone|call|help)\b/i', $userMsgLower)) {
+        $responseText = "📞 <b>Contact H-Mart Customer Support:</b><br><br>" .
+                        "• 📧 <b>Email:</b> support@hmart.com<br>" .
+                        "• 📱 <b>Phone:</b> +91-9876543210 (Mon-Sat, 9AM - 6PM)<br>" .
+                        "• 💬 <b>Contact Page:</b> You can submit questions via our Contact Form.<br><br>" .
+                        "We typically reply to email inquiries within 24 hours!";
+    } elseif (preg_match('/\b(payment|pay|cod|cash|card|credit)\b/i', $userMsgLower)) {
+        $responseText = "💳 <b>Payment Methods at H-Mart:</b><br><br>" .
+                        "We support <b>Cash on Delivery (COD)</b> for all local deliveries. You can also securely pay online using credit cards, debit cards, or net banking during the checkout process.";
+    } elseif (preg_match('/\b(hour|hours|time|open|close|location|address)\b/i', $userMsgLower)) {
+        $responseText = "🏪 <b>Store Hours & Location:</b><br><br>" .
+                        "• <b>Hours:</b> 8:00 AM to 9:00 PM daily.<br>" .
+                        "• <b>Location:</b> H-Mart Supermarket, Main Road, Kabankalan City.<br><br>" .
+                        "Come visit us to browse our fresh local produce!";
+    } elseif (preg_match('/\b(thank|thanks|thank you)\b/i', $userMsgLower)) {
+        $responseText = "You're very welcome! 😊 Let me know if you have any other questions. Happy shopping!";
+    } else {
+        if (!empty($productsResponse)) {
+            $responseText = "I found some items in our catalog that match your request. Let me know if you'd like to adjust your search or explore other categories!";
+        } else {
+            $responseText = "I'm here to help you get the most out of H-Mart! 🛍️<br><br>" .
+                            "You can write queries like:<br>" .
+                            "• \"show me shoes\" or \"search fresh\" to look up items.<br>" .
+                            "• \"what is in my cart?\" to see your basket.<br>" .
+                            "• Ask about \"shipping fees\" or \"returns\".<br><br>" .
+                            "For direct support, email us at <b>support@hmart.com</b>.";
+        }
+    }
+
+    $responseData = [
+        'choices' => [
+            [
+                'message' => [
+                    'role' => 'assistant',
+                    'content' => $responseText
+                ]
+            ]
+        ],
+        'products' => $productsResponse
+    ];
+    if ($isImageRequest && !empty($imagePrompt)) {
+        $responseData['generated_image_url'] = "https://image.pollinations.ai/prompt/" . $imagePrompt;
+    }
+    echo json_encode($responseData);
     exit;
 }
 
@@ -190,5 +354,5 @@ if (isset($responseData['choices'][0]['message'])) {
 }
 
 echo json_encode($responseData);
+exit;
 ?>
-

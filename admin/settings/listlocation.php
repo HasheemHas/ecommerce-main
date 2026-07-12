@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 		check_message(); 
 		?> 
 		 
@@ -30,7 +30,7 @@
 				  		echo '<tr>'; 
 				    		
 				  		echo '<td class="product-name-cell">'.htmlspecialchars($result->BRGY.' '.$result->PLACE).'</td>';  
-				  		echo '<td class="price-cell" style="color:#1e3a8a;">&#8369; '.number_format($result->DELPRICE,2).'</td>'; 
+				  		echo '<td class="price-cell" style="color:#1e3a8a;">₹ '.number_format($result->DELPRICE,2).'</td>'; 
 				  		echo
 				  		 '<td align="center">
 							<div class="action-group" style="justify-content:center;">

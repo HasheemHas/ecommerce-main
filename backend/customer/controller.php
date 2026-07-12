@@ -1,4 +1,7 @@
 <?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 require_once ("../include/initialize.php");
 
 $action = (isset($_GET['action']) && $_GET['action'] != '') ? $_GET['action'] : '';
@@ -75,31 +78,10 @@ function doInsert(){
 		$customer->CUSUNAME			= $_POST['CUSUNAME'];
 		$customer->CUSPASS			= sha1($_POST['CUSPASS']);	
 		$customer->DATEJOIN 		= date('Y-m-d H:i:s');
-		$customer->TERMS 			= 0; // Unverified
-		
+		$customer->TERMS 			= 1; // Auto-verified (no email verification required on InfinityFree)
+
 		if ($customer->create()) {
-			// Generate verification token
-			$token = md5(uniqid(rand(), true));
-			$emailEsc = $mydb->escape_value($email);
-			$tokenEsc = $mydb->escape_value($token);
-			$mydb->setQuery("INSERT INTO tbl_otp_codes (EMAIL, OTP_CODE, PURPOSE, EXPIRES_AT) VALUES ('{$emailEsc}', '{$tokenEsc}', 'signup', DATE_ADD(NOW(), INTERVAL 24 HOUR))");
-			$mydb->executeQuery();
-
-			// Construct verification link (absolute path using the base domain)
-			$actual_link = "https://unwed-backyard-upriver.ngrok-free.dev" . str_replace('frontend/', 'backend/', web_root) . 'api/verify_email.php?email=' . urlencode($email) . '&token=' . $token;
-
-			$subject = "Verify your H-Mart account";
-			$htmlBody = EmailTemplates::signupVerification($actual_link);
-			$textBody = "Welcome to H-Mart!\n\nPlease click the link below to verify your email:\n{$actual_link}";
-
-			$mailSent = Mailer::send($email, $subject, $htmlBody, $textBody);
-
-			$msg = "Registration successful! A verification link has been sent to your email. Click it to activate your account.";
-			if (defined('ML_DEMO_OTP_IN_RESPONSE') && ML_DEMO_OTP_IN_RESPONSE) {
-				$msg .= " <br><br><div class='alert alert-info'><strong>DEMO MODE:</strong> <a href='{$actual_link}' style='color:#0c3c78;text-decoration:underline;font-weight:700;'>Click here to verify instantly</a></div>";
-			}
-
-			message($msg, "success");
+			message("Registration successful! You can now log in.", "success");
 			redirect(web_root . 'index.php?q=login');
 		} else {
 			message("Registration failed. Please try again.", "error");
@@ -253,39 +235,39 @@ function doInsert(){
 
 
 			$count_cart = (isset($_SESSION['gcCart']) && is_array($_SESSION['gcCart'])) ? count($_SESSION['gcCart']) : 0;
-             for ($i=0; $i < $count_cart  ; $i++) { 
- 
+             for ($i=0; $i < $count_cart  ; $i++) {
+
 			$order = New Order();
-			$order->PROID		    = $_SESSION['gcCart'][$i]['productid']; 
+			$order->PROID		    = $_SESSION['gcCart'][$i]['productid'];
 			$order->ORDEREDQTY		= $_SESSION['gcCart'][$i]['qty'];
-			$order->ORDEREDPRICE	= $_SESSION['gcCart'][$i]['price'];   
-			$order->ORDEREDNUM		= $_POST['ORDEREDNUM']; 
-	     	$order->create(); 
- 
-		  	$product = New Product();			 
-			$product->qtydeduct($_SESSION['gcCart'][$i]['productid'],$_SESSION['gcCart'][$i]['qty']); 
+			$order->ORDEREDPRICE	= $_SESSION['gcCart'][$i]['price'];
+			$order->ORDEREDNUM		= $_POST['ORDEREDNUM'];
+	     	$order->create();
 
-
-			$remarks = 'Your order is on process.';
-			if ($_POST['paymethod'] === 'UPI Payment' && isset($_POST['utr_number'])) {
-				$remarks = 'Paid via UPI. UTR: ' . trim($_POST['utr_number']);
-			} elseif ($_POST['paymethod'] === 'Card Payment' && isset($_POST['card_number'])) {
-				$maskedCard = '•••• •••• •••• ' . substr(str_replace(' ', '', $_POST['card_number']), -4);
-				$remarks = 'Paid via Card. Card: ' . $maskedCard;
-			}
-			$summary = New Summary();
-			$summary->ORDEREDDATE 	= date("Y-m-d h:i:s");
-			$summary->CUSTOMERID		= $_SESSION['CUSID'];
-			$summary->ORDEREDNUM  	= $_POST['ORDEREDNUM'];  
-			$summary->DELFEE  		= $_POST['PLACE']; 
-			$summary->PAYMENTMETHOD	= $_POST['paymethod'];
-			$summary->PAYMENT 		= $_POST['alltot'];
-			$summary->ORDEREDSTATS 	= 'Pending';
-			$summary->CLAIMEDDATE		= $_POST['CLAIMEDDATE'];
-			$summary->ORDEREDREMARKS 	= $remarks;
-			$summary->HVIEW 			= 0	;
-			$summary->create();
+		  	$product = New Product();
+			$product->qtydeduct($_SESSION['gcCart'][$i]['productid'],$_SESSION['gcCart'][$i]['qty']);
 		  }
+
+		  // Create order summary ONCE (not in the loop)
+		  $remarks = 'Your order is on process.';
+		  if ($_POST['paymethod'] === 'UPI Payment' && isset($_POST['utr_number'])) {
+			  $remarks = 'Paid via UPI. UTR: ' . trim($_POST['utr_number']);
+		  } elseif ($_POST['paymethod'] === 'Card Payment' && isset($_POST['card_number'])) {
+			  $maskedCard = '•••• •••• •••• ' . substr(str_replace(' ', '', $_POST['card_number']), -4);
+			  $remarks = 'Paid via Card. Card: ' . $maskedCard;
+		  }
+		  $summary = New Summary();
+		  $summary->ORDEREDDATE 	= date("Y-m-d h:i:s");
+		  $summary->CUSTOMERID		= $_SESSION['CUSID'];
+		  $summary->ORDEREDNUM  	= $_POST['ORDEREDNUM'];
+		  $summary->DELFEE  		= $_POST['PLACE'];
+		  $summary->PAYMENTMETHOD	= $_POST['paymethod'];
+		  $summary->PAYMENT 		= $_POST['alltot'];
+		  $summary->ORDEREDSTATS 	= 'Pending';
+		  $summary->CLAIMEDDATE		= $_POST['CLAIMEDDATE'];
+		  $summary->ORDEREDREMARKS 	= $remarks;
+		  $summary->HVIEW 			= 0	;
+		  $summary->create();
 
      
 

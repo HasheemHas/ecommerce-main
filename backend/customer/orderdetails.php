@@ -1,4 +1,4 @@
-<?php 
+﻿<?php 
 if (!isset($_SESSION['CUSID'])){
     redirect(web_root."index.php");
 }
@@ -493,6 +493,8 @@ $res = $autonumber->set_autonumber('ordernumber');
             <input type="hidden" name="alltot" id="alltot" value="">
             <input type="hidden" name="FNAME" id="FNAME" value="">
             <input type="hidden" name="LNAME" id="LNAME" value="">
+            <input type="hidden" name="PLACE" value="0">
+            <input type="hidden" name="CLAIMEDDATE" value="<?php echo date('Y-m-d H:i:s'); ?>">
 
             <div class="row">
                 <!-- Left Side: Address & Payment Methods -->
@@ -521,11 +523,11 @@ $res = $autonumber->set_autonumber('ordernumber');
                             </div>
                             <div class="col-md-4" style="margin-bottom: 15px;">
                                 <label class="input-label">State</label>
-                                <input type="text" name="PROVINCE" class="checkout-input" value="<?php echo htmlspecialchars($singlecustomer->PROVINCE ? $singlecustomer->PROVINCE : 'IL'); ?>" style="background: white;" required>
+                                <input type="text" name="PROVINCE" class="checkout-input" value="<?php echo htmlspecialchars($singlecustomer->PROVINCE ₹ $singlecustomer->PROVINCE : 'IL'); ?>" style="background: white;" required>
                             </div>
                             <div class="col-md-4" style="margin-bottom: 15px;">
                                 <label class="input-label">Zip Code</label>
-                                <input type="text" name="ZIPCODE" class="checkout-input" value="<?php echo htmlspecialchars($singlecustomer->ZIPCODE ? $singlecustomer->ZIPCODE : '62704'); ?>" style="background: white;" required>
+                                <input type="text" name="ZIPCODE" class="checkout-input" value="<?php echo htmlspecialchars($singlecustomer->ZIPCODE ₹ $singlecustomer->ZIPCODE : '62704'); ?>" style="background: white;" required>
                             </div>
                         </div>
                     </div>
@@ -644,7 +646,7 @@ $res = $autonumber->set_autonumber('ordernumber');
                                                 <h3 class="summary-item-name"><?php echo $result->PRODESC; ?></h3>
                                                 <span class="summary-item-qty">Qty: <?php echo $_SESSION['gcCart'][$i]['qty']; ?></span>
                                             </div>
-                                            <span class="summary-item-price">&#8377;<?php echo number_format($_SESSION['gcCart'][$i]['price'], 2); ?></span>
+                                            <span class="summary-item-price">₹<?php echo number_format($_SESSION['gcCart'][$i]['price'], 2); ?></span>
                                         </div>
                             <?php
                                         $tot += $_SESSION['gcCart'][$i]['price'];
@@ -657,7 +659,7 @@ $res = $autonumber->set_autonumber('ordernumber');
                         <!-- Calculations Lines -->
                         <div class="summary-line">
                             <span>Subtotal</span>
-                            <span>&#8377;<span id="subtotal-label"><?php echo number_format($tot, 2); ?></span></span>
+                            <span>₹<span id="subtotal-label"><?php echo number_format($tot, 2); ?></span></span>
                         </div>
                         <div class="summary-line">
                             <span>Shipping</span>
@@ -665,14 +667,14 @@ $res = $autonumber->set_autonumber('ordernumber');
                         </div>
                         <div class="summary-line">
                             <span>Tax</span>
-                            <span>&#8377;<span id="tax-label">0.00</span></span>
+                            <span>₹<span id="tax-label">0.00</span></span>
                         </div>
 
                         <div class="summary-divider"></div>
 
                         <div class="summary-total-line">
                             <span>Total</span>
-                            <span class="summary-total-price">&#8377;<span id="grand-total-label">0.00</span></span>
+                            <span class="summary-total-price">₹<span id="grand-total-label">0.00</span></span>
                         </div>
 
                         <!-- Submit CTA -->

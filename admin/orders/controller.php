@@ -143,7 +143,7 @@ function doInsert(){
 			$summary = New Summary();
 			$summary->ORDEREDSTATS       = $status;
 			$summary->ORDEREDREMARKS     = $remarks;
-			$summary->CLAIMEDADTE 		 = $delivered;
+			$summary->CLAIMEDDATE 		 = $delivered;
 			$summary->HVIEW 			 = 0;
 			$summary->update($_GET['id']);
 

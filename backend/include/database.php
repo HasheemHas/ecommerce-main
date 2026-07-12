@@ -55,25 +55,29 @@ class Database {
 		$cur = $this->executeQuery();
 		
 		$array = array();
-		while ($row = mysqli_fetch_object($cur)) {
-			if ($key) {
-				$array[$row->$key] = $row;
-			} else {
-				$array[] = $row;
+		if ($cur) {
+			while ($row = mysqli_fetch_object($cur)) {
+				if ($key) {
+					$array[$row->$key] = $row;
+				} else {
+					$array[] = $row;
+				}
 			}
+			mysqli_free_result( $cur );
 		}
-		mysqli_free_result( $cur );
 		return $array;
 	}
 	
 	function loadSingleResult() {
 		$cur = $this->executeQuery();
-			
-		while ($row = mysqli_fetch_object($cur)) {
-		return $data = $row;
+		
+		if ($cur) {
+			while ($row = mysqli_fetch_object($cur)) {
+				return $data = $row;
+			}
+			mysqli_free_result($cur);
 		}
-		mysqli_free_result($cur);
-		//return $data;
+		return null;
 	}
 	
 	function getFieldsOnOneTable($tbl_name) {

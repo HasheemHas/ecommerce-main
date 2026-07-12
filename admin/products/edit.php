@@ -63,6 +63,17 @@
                   <div class="form-group">
                     <div class="col-md-8">
                       <label class="col-md-4 control-label" for=
+                      "INGREDIENTS">Ingredients/Details:</label>
+
+                      <div class="col-md-8">
+                      <textarea class="form-control input-sm" id="INGREDIENTS" name="INGREDIENTS" cols="1" rows="2" placeholder="Ingredients or product details"><?php echo isset($singleproduct->INGREDIENTS) ? $singleproduct->INGREDIENTS : ''; ?></textarea>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="form-group">
+                    <div class="col-md-8">
+                      <label class="col-md-4 control-label" for=
                       "CATEGORY">Category:</label>
 
                       <div class="col-md-8">

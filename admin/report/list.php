@@ -1,4 +1,4 @@
-<?php 
+﻿<?php 
     if (!isset($_SESSION['USERID'])){
         redirect(web_root."admin/login.php");
     } 
@@ -278,8 +278,8 @@ $date_to     = '';
 
 if (isset($_POST['submit'])) {
     $searched  = true;
-    $date_from = trim($_POST['date_from'] ?? '');
-    $date_to   = trim($_POST['date_to']   ?? '');
+    $date_from = trim($_POST['date_from'] ?₹ '');
+    $date_to   = trim($_POST['date_to']   ?₹ '');
 
     if ($date_from && $date_to) {
         /* Join: product → promopro → order → summary → customer
@@ -307,14 +307,14 @@ if (isset($_POST['submit'])) {
         $totOrders = count($results);
 
         foreach ($results as $r) {
-            $totCapital += $r->ORIGINALPRICE ?? 0;
+            $totCapital += $r->ORIGINALPRICE ?₹ 0;
             $totRevenue += $r->PROPRICE * $r->QTY;
             $totQty     += $r->QTY;
         }
-        $avgOrder = $totOrders > 0 ? round($totRevenue / $totOrders, 2) : 0;
+        $avgOrder = $totOrders > 0 ₹ round($totRevenue / $totOrders, 2) : 0;
     }
 }
-$avgOrder = isset($avgOrder) ? $avgOrder : 0;
+$avgOrder = isset($avgOrder) ₹ $avgOrder : 0;
 ?>
 
 <!-- Title Row -->
@@ -356,7 +356,7 @@ $avgOrder = isset($avgOrder) ? $avgOrder : 0;
 <div class="stats-row">
     <div class="stat-card revenue">
         <div class="stat-label">Total Revenue</div>
-        <div class="stat-value">&#8369;<?php echo number_format($totRevenue, 2); ?></div>
+        <div class="stat-value">₹<?php echo number_format($totRevenue, 2); ?></div>
         <div class="stat-sub">Selling price × qty</div>
     </div>
     <div class="stat-card orders">
@@ -371,7 +371,7 @@ $avgOrder = isset($avgOrder) ? $avgOrder : 0;
     </div>
     <div class="stat-card avg">
         <div class="stat-label">Avg Revenue/Product</div>
-        <div class="stat-value">&#8369;<?php echo number_format($avgOrder, 2); ?></div>
+        <div class="stat-value">₹<?php echo number_format($avgOrder, 2); ?></div>
         <div class="stat-sub">Revenue ÷ product lines</div>
     </div>
 </div>
@@ -439,10 +439,10 @@ $avgOrder = isset($avgOrder) ? $avgOrder : 0;
             <tr>
                 <td style="color:#94a3b8; font-size:12px;"><?php echo $i++; ?></td>
                 <td><span class="product-pill"><?php echo htmlspecialchars($r->PRODESC); ?></span></td>
-                <td class="price-tag">&#8369;<?php echo number_format($r->ORIGINALPRICE ?? 0, 2); ?></td>
-                <td class="price-tag">&#8369;<?php echo number_format($r->PROPRICE, 2); ?></td>
+                <td class="price-tag">₹<?php echo number_format($r->ORIGINALPRICE ?₹ 0, 2); ?></td>
+                <td class="price-tag">₹<?php echo number_format($r->PROPRICE, 2); ?></td>
                 <td><strong><?php echo number_format($r->QTY); ?></strong></td>
-                <td>&#8369;<?php echo number_format($subtotal, 2); ?></td>
+                <td>₹<?php echo number_format($subtotal, 2); ?></td>
             </tr>
         <?php endforeach; endif; ?>
         </tbody>
@@ -453,7 +453,7 @@ $avgOrder = isset($avgOrder) ? $avgOrder : 0;
                 <td>—</td>
                 <td>—</td>
                 <td><strong><?php echo number_format($totQty); ?> units</strong></td>
-                <td class="revenue-total">&#8369;<?php echo number_format($totRevenue, 2); ?></td>
+                <td class="revenue-total">₹<?php echo number_format($totRevenue, 2); ?></td>
             </tr>
         </tfoot>
         <?php endif; ?>

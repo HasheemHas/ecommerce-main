@@ -1,4 +1,4 @@
- 
+﻿ 
 <?php require_once ("../../backend/include/initialize.php"); 
    if (!isset($_SESSION['TYPE'])=='Administrator'){
       redirect(web_root."index.php");
@@ -11,7 +11,7 @@
     <?php  
     if (isset($_POST['product_id'])){//add to cart
 
-    $query = "SELECT * FROM `tblproducts` p  ,`tblcategory` c 
+    $query = "SELECT * FROM `tblproduct` p  ,`tblcategory` c 
           WHERE   p.`CATEGORYID`=c.`CATEGORYID` and PRODUCTID='".$_POST['product_id']."'";
       $mydb->setQuery($query);
        $cur = $mydb->loadSingleResult();
@@ -35,8 +35,8 @@ if(isset($_GET['updateid'])){//update cart
 
       $pid=$_SESSION['fixnmix_cart'][$i]['productid'];
 
-      $qty=intval(isset($_GET['QTY'.$pid]) ? $_GET['QTY'.$pid] : "");
-       $price=(double)(isset($_GET['subTOT'.$pid]) ? $_GET['subTOT'.$pid] : "");
+      $qty=intval(isset($_GET['QTY'.$pid]) ₹ $_GET['QTY'.$pid] : "");
+       $price=(double)(isset($_GET['subTOT'.$pid]) ₹ $_GET['subTOT'.$pid] : "");
     // echo '<script> alert('.$price.')  </script>';
      
       if($qty>0 && $qty<=9999){ 
@@ -87,7 +87,7 @@ if(isset($_GET['id'])) { //remove to cart
                             if (!empty($_SESSION['fixnmix_cart'])){ 
                                   $count_cart = count($_SESSION['fixnmix_cart']);
                                   for ($i=0; $i < $count_cart  ; $i++) { 
-                                  $query = "SELECT * FROM `tblproducts` p , `tblcategory` c 
+                                   $query = "SELECT * FROM `tblproduct` p , `tblcategory` c 
                                     WHERE  p.`CATEGORYID`=c.`CATEGORYID` and PRODUCTID='".$_SESSION['fixnmix_cart'][$i]['productid']."'";
                                     $mydb->setQuery($query);
                                     $cur = $mydb->loadResultList();
@@ -97,12 +97,12 @@ if(isset($_GET['id'])) { //remove to cart
                                       <td></td>
                                       <td><img src="<?php echo web_root.'admin/modules/product/'.$result->IMAGES; ?>" onload="totalprice()" width="50px" height="50px"></td>
                                       <td><?php echo $result->PRODUCTNAME ?></td>
-                                      <td>&#8369 <?php echo  $result->PRICE ?></td>
+                                      <td>₹ <?php echo  $result->PRICE ?></td>
                                       <td>
                                       <input type="NUMBER" data-id="<?php echo $result->PRODUCTID;  ?>" class="qty" name="QTY<?php echo $result->PRODUCTID;  ?>" id="QTY<?php echo $result->PRODUCTID; ?>"  value="<?php echo $_SESSION['fixnmix_cart'][$i]['qty'] ?>"/>
                                       </td>
                                         <td>
-                                        &#8369 <output id="Osubtot<?php echo $result->PRODUCTID ?>"><?php echo   $_SESSION['fixnmix_cart'][$i]['price']; ?></output>
+                                        ₹ <output id="Osubtot<?php echo $result->PRODUCTID ?>"><?php echo   $_SESSION['fixnmix_cart'][$i]['price']; ?></output>
                                         </td>
                                       <!-- hidden textbox -->
                                       <input type="hidden" name="TOT<?php echo $result->PRODUCTID;  ?>" id="TOT<?php echo $result->PRODUCTID; ?>"  value="<?php echo $_SESSION['fixnmix_cart'][$i]['price'] ?>"/> 
@@ -123,7 +123,7 @@ if(isset($_GET['id'])) { //remove to cart
                 </div>
               <table>
            <tfoot  >
-                    <div ><strong><h1 align="right" >Total Price : &#8369 <span id="sum">0</span></h1></strong></td></div> 
+                    <div ><strong><h1 align="right" >Total Price : ₹ <span id="sum">0</span></h1></strong></td></div> 
 
                               
                   </tfoot>

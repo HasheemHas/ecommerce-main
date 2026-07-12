@@ -13,6 +13,7 @@
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
 <!-- DataTables CSS -->
 <link href="<?php echo web_root; ?>admin/css/dataTables.bootstrap.css" rel="stylesheet">
+<link href="<?php echo web_root; ?>css/mobile-responsive.css" rel="stylesheet">
 <!-- Google Fonts -->
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
@@ -988,10 +989,33 @@ $current_page = basename(dirname($_SERVER['PHP_SELF']));
 
                 <?php require_once $content; ?>
             </div>
-        </div>
     </div>
+</div>
 
-    <!-- Modal Profile Image -->
+<!-- Mobile Sidebar Overlay -->
+<div class="admin-sidebar-overlay" onclick="closeAdminSidebar()"></div>
+
+<script>
+function toggleAdminSidebar() {
+    const sidebar = document.querySelector('.admin-sidebar');
+    const overlay = document.querySelector('.admin-sidebar-overlay');
+    const layout = document.querySelector('.admin-layout');
+    if (window.innerWidth <= 768) {
+        sidebar.classList.toggle('open');
+        overlay.classList.toggle('open');
+        document.body.style.overflow = sidebar.classList.contains('open') ? 'hidden' : '';
+    } else {
+        layout.classList.toggle('sidebar-collapsed');
+    }
+}
+function closeAdminSidebar() {
+    document.querySelector('.admin-sidebar').classList.remove('open');
+    document.querySelector('.admin-sidebar-overlay').classList.remove('open');
+    document.body.style.overflow = '';
+}
+</script>
+
+<!-- Modal Profile Image -->
     <div class="modal fade" id="usermodal" tabindex="-1">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -1136,10 +1160,7 @@ document.addEventListener('click', function(e) {
     }
 });
 
-function toggleAdminSidebar() {
-    const layout = document.querySelector('.admin-layout');
-    layout.classList.toggle('sidebar-collapsed');
-}
+// toggleAdminSidebar is now defined in the head script for mobile support
 
 $(document).ready(function() {
     if ($('#dash-table').length) {

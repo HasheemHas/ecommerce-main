@@ -2,7 +2,7 @@
 $recommended = [];
 try {
     $recommended = RecommendationEngine::getRecommendations(null, 8);
-} catch (Exception $e) {
+} catch (Throwable $e) {
     $recommended = [];
 }
 if (empty($recommended)) {

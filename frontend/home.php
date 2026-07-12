@@ -1185,4 +1185,3 @@
     // Initialize auto slide
     startInterval();
     </script>
-</div>

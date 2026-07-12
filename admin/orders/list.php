@@ -1,4 +1,4 @@
-
+﻿
 <div class="container">
 	<?php
 		 if (!isset($_SESSION['USERID'])){
@@ -93,7 +93,7 @@
 				  		echo '<td><a href="#" title="View list Of ordered" data-target="#myModal" data-toggle="modal" class="orders" data-id="'.$result->ORDEREDNUM.'">'.$result->ORDEREDNUM .'</a> </td>';  
 				  		echo '<td><a href="index.php?view=customerdetails&customerid='.$result->CUSTOMERID.'" title="View customer information">'. $result->FNAME.' '. $result->LNAME.'</a></td>';
 				  		echo '<td>'. date_format(date_create($result->ORDEREDDATE),"M/d/Y h:i:s").'</td>';
-				  		echo '<td> &#8369 '.number_format($result->PAYMENT ,2).'</td>';
+				  		echo '<td> ₹ '.number_format($result->PAYMENT ,2).'</td>';
 				  		echo '<td >'.$result->PAYMENTMETHOD .'</td>';
 				  		// echo '<td></td>';
 				  		echo '<td >'. $result->ORDEREDSTATS.'</td>';

@@ -14,6 +14,7 @@
   <link href="css/main.css" rel="stylesheet">
   <link href="css/responsive.css" rel="stylesheet">
   <link href="css/darkmode.css" rel="stylesheet">
+  <link href="../css/mobile-responsive.css" rel="stylesheet">
     <!--[if lt IE 9]>
     <script src="js/html5shiv.js"></script>
     <script src="js/respond.min.js"></script>
@@ -627,6 +628,11 @@ if (isset($_SESSION['gcCart']) && is_array($_SESSION['gcCart'])){
 <header class="hmart-premium-navbar">
     <div class="container-fluid">
         <div class="navbar-container-inner">
+            <!-- 0. Hamburger Button (mobile) -->
+            <button class="hamburger-btn" onclick="toggleMobileMenu()" aria-label="Menu">
+                <i class="fa fa-bars"></i>
+            </button>
+
             <!-- 1. Brand Logo -->
             <a href="<?php echo web_root?>" class="nav-logo-link">
                 <img src="<?php echo web_root; ?>img/hmart-bag-logo.svg" class="nav-logo-img nav-logo-img-light" alt="H-Mart">
@@ -709,6 +715,43 @@ if (isset($_SESSION['gcCart']) && is_array($_SESSION['gcCart'])){
         </div>
     </div>
 </header>
+
+<!-- Mobile Menu Overlay -->
+<div class="mobile-menu-overlay" onclick="toggleMobileMenu()"></div>
+
+<!-- Mobile Menu Panel -->
+<div class="mobile-menu-panel">
+    <div class="mobile-menu-header">
+        <strong style="font-family:'Outfit',sans-serif; font-size:18px;">Menu</strong>
+        <button class="mobile-menu-close" onclick="toggleMobileMenu()"><i class="fa fa-times"></i></button>
+    </div>
+    <ul class="mobile-menu-links">
+        <li><a href="index.php?q=aishopper" class="<?php echo ($curr_q == 'aishopper') ? 'active' : ''; ?>"><i class="fa fa-magic"></i> AI Shopper</a></li>
+        <li><a href="index.php?q=product&category=HOUSEHOLDS" class="<?php echo ($curr_cat == 'HOUSEHOLDS' || $curr_cat == 'Household') ? 'active' : ''; ?>"><i class="fa fa-tag"></i> Household</a></li>
+        <li><a href="index.php?q=product" class="<?php echo ($curr_q == 'product' && $curr_cat == '') ? 'active' : ''; ?>"><i class="fa fa-archive"></i> Products</a></li>
+        <li><a href="index.php?q=contact" class="<?php echo ($curr_q == 'contact') ? 'active' : ''; ?>"><i class="fa fa-file-text"></i> Weekly Ads</a></li>
+        <li style="border-top:1px solid #e2e8f0; margin-top:8px; padding-top:8px;">
+            <?php if (isset($_SESSION['CUSID'])) { ?>
+                <a href="index.php?q=profile"><i class="fa fa-user"></i> Account</a>
+                <a href="index.php?q=trackorder"><i class="fa fa-list-alt"></i> Orders</a>
+                <a href="index.php?q=cart"><i class="fa fa-shopping-cart"></i> Cart</a>
+                <a href="logout.php"><i class="fa fa-sign-out"></i> Logout</a>
+            <?php } else { ?>
+                <a href="index.php?q=login"><i class="fa fa-sign-in"></i> Login</a>
+                <a href="index.php?q=signup"><i class="fa fa-user-plus"></i> Sign Up</a>
+                <a href="index.php?q=cart"><i class="fa fa-shopping-cart"></i> Cart</a>
+            <?php } ?>
+        </li>
+    </ul>
+</div>
+
+<script>
+function toggleMobileMenu() {
+    document.querySelector('.mobile-menu-overlay').classList.toggle('open');
+    document.querySelector('.mobile-menu-panel').classList.toggle('open');
+    document.body.style.overflow = document.body.style.overflow === 'hidden' ? '' : 'hidden';
+}
+</script>
 
  
    
@@ -1063,8 +1106,8 @@ document.getElementById('live-search-input').addEventListener('keyup', function(
     let dropdown = document.getElementById('search-suggestions');
     
     if (query.length >= 2) {
-        // Fetch suggestions and corrections from Python AI Service
-        fetch('http://localhost:8000/api/customer/search-suggest?q=' + encodeURIComponent(query))
+        // Fetch suggestions and corrections from PHP AI Service
+        fetch('<?php echo str_replace('frontend/', 'backend/api/', web_root); ?>customer_ai.php?action=search-suggest&q=' + encodeURIComponent(query))
         .then(response => response.json())
         .then(data => {
             dropdown.innerHTML = '';
@@ -1154,7 +1197,7 @@ document.addEventListener("mouseleave", function(e) {
             exitIntentTriggered = true;
             
             // Query AI Service for discount coupon
-            fetch('http://localhost:8000/api/customer/cart-risk/session_' + Date.now(), {
+            fetch('<?php echo str_replace('frontend/', 'backend/api/', web_root); ?>customer_ai.php?action=cart-risk', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({

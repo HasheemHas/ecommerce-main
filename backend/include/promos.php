@@ -115,7 +115,7 @@ class Promo {
 		$sql .= ") VALUES ('";
 		$sql .= join("', '", array_values($attributes));
 		$sql .= "')";
-	echo $mydb->setQuery($sql);
+	$mydb->setQuery($sql);
 	
 	 if($mydb->executeQuery()) {
 	    $this->id = $mydb->insert_id();

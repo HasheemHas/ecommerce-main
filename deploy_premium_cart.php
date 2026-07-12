@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 $file = 'frontend/cart.php';
 $content = '<section class="hmart-premium-cart">
     <style>
@@ -352,7 +352,7 @@ $content = '<section class="hmart-premium-cart">
         <?php check_message(); ?>
 
         <?php
-        $countCart = (!empty($_SESSION[\'gcCart\']) && is_array($_SESSION[\'gcCart\'])) ? count($_SESSION[\'gcCart\']) : 0;
+        $countCart = (!empty($_SESSION[\'gcCart\']) && is_array($_SESSION[\'gcCart\'])) ₹ count($_SESSION[\'gcCart\']) : 0;
         ?>
 
         <div class="cart-title-wrapper">
@@ -395,7 +395,7 @@ $content = '<section class="hmart-premium-cart">
                                     </div>
 
                                     <div class="item-price-col">
-                                        <span class="item-price">&#8377;<output style="display:inline;" id="Osubtot<?php echo $result->PROID; ?>"><?php echo number_format($_SESSION[\'gcCart\'][$i][\'price\'], 2); ?></output></span>
+                                        <span class="item-price">₹<output style="display:inline;" id="Osubtot<?php echo $result->PROID; ?>"><?php echo number_format($_SESSION[\'gcCart\'][$i][\'price\'], 2); ?></output></span>
                                         <a href="../backend/cart/controller.php?action=delete&id=<?php echo $result->PROID; ?>" class="remove-link">
                                             <i class="fa fa-trash-o"></i> Remove
                                         </a>
@@ -434,7 +434,7 @@ $content = '<section class="hmart-premium-cart">
                         
                         <div class="summary-row">
                             <span>Subtotal</span>
-                            <span style="color:var(--text-dark); font-weight:700;">&#8377;<span id="sum">0.00</span></span>
+                            <span style="color:var(--text-dark); font-weight:700;">₹<span id="sum">0.00</span></span>
                         </div>
                         
                         <div class="summary-row">
@@ -444,17 +444,17 @@ $content = '<section class="hmart-premium-cart">
 
                         <div class="summary-row" id="discount-row" style="display:none;">
                             <span>Discount</span>
-                            <span style="color:var(--danger); font-weight:700;">-&#8377;<span id="summary-discount">0.00</span></span>
+                            <span style="color:var(--danger); font-weight:700;">-₹<span id="summary-discount">0.00</span></span>
                         </div>
 
                         <div class="summary-row">
                             <span>Tax (Estimated)</span>
-                            <span style="color:var(--text-dark); font-weight:700;">&#8377;<span id="summary-tax">0.00</span></span>
+                            <span style="color:var(--text-dark); font-weight:700;">₹<span id="summary-tax">0.00</span></span>
                         </div>
 
                         <div class="summary-row total">
                             <span>Total</span>
-                            <span class="total-val">&#8377;<span id="summary-final-total">0.00</span></span>
+                            <span class="total-val">₹<span id="summary-final-total">0.00</span></span>
                         </div>
 
                         <a href="index.php?q=orderdetails" class="checkout-action">
@@ -482,7 +482,7 @@ $content = '<section class="hmart-premium-cart">
 function updateSummaryTotals() {
     let subtotalText = document.getElementById(\'sum\').innerText || document.getElementById(\'sum\').innerHTML;
     let subtotal = parseFloat(subtotalText.replace(/,/g, \'\')) || 0;
-    let discountText = document.getElementById(\'summary-discount\') ? document.getElementById(\'summary-discount\').innerText : "0";
+    let discountText = document.getElementById(\'summary-discount\') ₹ document.getElementById(\'summary-discount\').innerText : "0";
     let discount = parseFloat(discountText.replace(/,/g, \'\')) || 0;
     
     let finalTotal = subtotal - discount;

@@ -1,4 +1,4 @@
-<?php  
+﻿<?php  
   if (!isset($_SESSION['USERID'])){
       redirect(web_root."admin/index.php");
   }
@@ -186,9 +186,9 @@
                 <h4 style="margin:0 0 12px 0; font-weight:700; color:#0f172a; font-size:16px; text-align: left;"><?php echo htmlspecialchars($result->PRODESC); ?></h4>
                 <ul class="discount-info-list">
                     <li><strong>Category:</strong> <?php echo htmlspecialchars($result->CATEGORIES); ?></li>
-                    <li><strong>Original Price:</strong> &#8369;<?php echo number_format($result->PROPRICE, 2); ?></li>
+                    <li><strong>Original Price:</strong> ₹<?php echo number_format($result->PROPRICE, 2); ?></li>
                     <li><strong>Current Discount:</strong> <?php echo $result->PRODISCOUNT; ?>%</li>
-                    <li><strong>Current Discounted Price:</strong> &#8369;<?php echo number_format($result->PRODISPRICE, 2); ?></li>
+                    <li><strong>Current Discounted Price:</strong> ₹<?php echo number_format($result->PRODISPRICE, 2); ?></li>
                 </ul>
             </div>
         </div>
@@ -203,9 +203,9 @@
             </div>
 
             <div class="form-group-hmart">
-                <label for="PRODISPRICE">Calculated Discounted Price (&#8369;)</label>
+                <label for="PRODISPRICE">Calculated Discounted Price (?)</label>
                 <div class="input-addon-wrapper">
-                    <span class="input-addon-icon">&#8369;</span>
+                    <span class="input-addon-icon">₹</span>
                     <input type="text" name="PRODISPRICE" id="PRODISPRICE" placeholder="0.0" value="<?php echo $result->PRODISPRICE; ?>" readonly style="padding-left: 30px; background: #f8fafc; cursor: not-allowed;">
                 </div>
             </div>

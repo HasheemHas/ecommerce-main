@@ -1,4 +1,4 @@
-<?php  
+﻿<?php  
      if (!isset($_SESSION['USERID'])){
       redirect(web_root."index.php");
      }
@@ -57,7 +57,7 @@
                             </strong>
                         </td>
                         <td class="text-primary">
-                            <?php echo ': &#8369 '.$singleproduct->PROPRICE; ?> 
+                            <?php echo ': ₹ '.$singleproduct->PROPRICE; ?> 
                         </td>
                     </tr>
 
