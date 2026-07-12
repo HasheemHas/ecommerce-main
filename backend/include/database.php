@@ -16,20 +16,29 @@ class Database {
 	}
 	
 	public function open_connection() {
-		$this->conn = mysqli_connect(server,user,pass);
-		if(!$this->conn){
-			echo "Problem in database connection! Contact administrator!";
-			exit();
-		 
-		}else{
-
-			$db_select = mysqli_select_db($this->conn,database_name);
-			if (!$db_select) {
-				echo "Problem in selecting database! Contact administrator!";
+		try {
+			// Disable strict mysqli exception throwing to handle connection failures gracefully
+			mysqli_report(MYSQLI_REPORT_OFF);
+			
+			$this->conn = @mysqli_connect(server,user,pass);
+			if(!$this->conn){
+				echo "Problem in database connection! Contact administrator!<br>";
+				if (defined('server')) {
+					echo "Could not connect to database server: " . htmlspecialchars(server);
+				}
 				exit();
+			}else{
+				$db_select = @mysqli_select_db($this->conn,database_name);
+				if (!$db_select) {
+					echo "Problem in selecting database! Contact administrator!";
+					exit();
+				}
 			}
+		} catch (\Throwable $t) {
+			echo "Problem in database connection! Contact administrator!<br>";
+			echo "Details: " . htmlspecialchars($t->getMessage());
+			exit();
 		}
-
 	}
 	
 	function setQuery($sql='') {
