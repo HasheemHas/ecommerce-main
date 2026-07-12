@@ -5,13 +5,15 @@ import colorsys
 import pymysql
 from PIL import Image, ImageEnhance
 
-# Database connection credentials
-DB_HOST = "localhost"
-DB_USER = "root"
-DB_PASS = ""
-DB_NAME = "db_ecommerce"
+# Database connection credentials (reads from environment variables on Render, fallbacks to local XAMPP)
+DB_HOST = os.environ.get('DB_HOST', 'localhost')
+DB_USER = os.environ.get('DB_USER', 'root')
+DB_PASS = os.environ.get('DB_PASS', '')
+DB_NAME = os.environ.get('DB_NAME', 'db_ecommerce')
 
-PHOTOS_DIR = r"c:\xampp\htdocs\ecommerce\admin\products\uploaded_photos"
+# Dynamically determine the upload directory path (works on both local Windows and Render Linux)
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+PHOTOS_DIR = os.path.join(BASE_DIR, "admin", "products", "uploaded_photos")
 
 # Categories data structure for generator
 CATEGORIES_DATA = {
@@ -297,6 +299,9 @@ except AttributeError:
 def generate_image_variant(cat_name, base_idx, product_idx, target_path):
     """Generates a truly unique product image per item using the real Unsplash mock base images.
     Every product gets a different source base image AND unique brightness/contrast/saturation transformation."""
+    if os.path.exists(target_path):
+        return True
+        
     base_file = f"{cat_name.lower()}_mock_{base_idx}.jpg"
     base_path = os.path.join(PHOTOS_DIR, base_file)
     
