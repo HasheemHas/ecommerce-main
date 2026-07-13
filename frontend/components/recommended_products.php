@@ -28,7 +28,7 @@ if (empty($recommended)) {
             <a href="index.php?q=single-item&id=<?php echo (int) $result->PROID; ?>" style="text-decoration:none;color:inherit;display:block;">
                 <div class="prod-img-container">
                     <?php if ($isNew) { ?><span class="badge-tag badge-new">Recommended</span><?php } ?>
-                    <img src="<?php echo str_replace('frontend/', '', web_root).'admin/products/'.$result->IMAGES; ?>" class="prod-img" alt="<?php echo htmlspecialchars($result->PRODESC); ?>" />
+                    <img src="<?php echo htmlspecialchars(product_image_url($result->IMAGES, $result->PRODESC)); ?>" class="prod-img" alt="<?php echo htmlspecialchars($result->PRODESC); ?>" loading="lazy" />
                 </div>
                 <div class="prod-details">
                     <div class="prod-category"><?php echo $result->CATEGORIES; ?></div>

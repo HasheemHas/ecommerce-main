@@ -1,6 +1,13 @@
 # Customer Storefront AI Helpers
 from ai_microservice.utils.db import get_db_connection
 import random
+from urllib.parse import urlencode
+
+def product_image_url(image, name=""):
+    return '/frontend/product-image.php?' + urlencode({
+        'image': (image or 'product.jpg').split('/')[-1],
+        'name': name or '',
+    })
 
 def levenshtein_distance(s1, s2):
     if len(s1) < len(s2):
@@ -74,7 +81,7 @@ def visual_search_match(image_name: str):
                 "product_id": p.get("PROID"),
                 "name": p.get("PRONAME") or p.get("PRODESC"),
                 "price": p.get("PROPRICE"),
-                "image": p.get("IMAGES")
+                "image": product_image_url(p.get("IMAGES"), p.get("PRONAME") or p.get("PRODESC"))
             }
             for p in matched_products
         ]

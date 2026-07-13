@@ -29,7 +29,7 @@ require_once("../backend/include/initialize.php");
      <div class="modal-body">  
               <div class="row">  
                 <div class="col-md-6">
-                  <img width="230" class="" height="220"  src="<?php echo str_replace('frontend/', '', web_root) . 'admin/products/'.  $cur->IMAGES;?>" alt="">
+                  <img width="230" class="" height="220" src="<?php echo htmlspecialchars(product_image_url($cur->IMAGES, $cur->PRODESC)); ?>" alt="<?php echo htmlspecialchars($cur->PRODESC); ?>">
                 </div>
 
      
@@ -62,4 +62,4 @@ require_once("../backend/include/initialize.php");
          </div> 
         </form> 
        </div> 
-  </div> 
+  </div>

@@ -13,7 +13,7 @@
                           ?>
                           <tr>
                           <td>
-                             <img alt="" style="width:300px; height:200px;>" title="" class="img-reponsive img-thumbnail isTooltip" src="<?php echo web_root.'admin/products/'. $result->IMAGES; ?>" data-original-title="Usuario"> 
+                             <img alt="<?php echo htmlspecialchars($result->PRODESC); ?>" style="width:300px; height:200px;" title="" class="img-reponsive img-thumbnail isTooltip" src="<?php echo htmlspecialchars(product_image_url($result->IMAGES, $result->PRODESC)); ?>" data-original-title="Product">
                          </td>
                           <td>
                           <p><h4>Date added: <?php echo date_format(date_create($result->WISHDATE),"M/d/Y h:i:s") ; ?></h4></p>
@@ -51,4 +51,3 @@
                       
                     </table>
                  </form>
-     

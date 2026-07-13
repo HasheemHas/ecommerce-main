@@ -17,7 +17,6 @@
 if(isset($_POST['sidebarLogin'])){
   $email = trim($_POST['U_USERNAME']);
   $upass  = trim($_POST['U_PASS']);
-  $h_upass = sha1($upass);
   
    if ($email == '' OR $upass == '') {
 
@@ -26,7 +25,7 @@ if(isset($_POST['sidebarLogin'])){
          
     } else {   
         $cus = new Customer();
-        $cusres = $cus::cusAuthentication($email,$h_upass);
+        $cusres = $cus::cusAuthentication($email, $upass);
 
         if ($cusres === true){
            $go = !empty($_SESSION['login_redirect']) ? $_SESSION['login_redirect'] : 'index.php?q=profile';
@@ -45,7 +44,6 @@ if(isset($_POST['sidebarLogin'])){
  if(isset($_POST['modalLogin'])){
   $email = trim($_POST['U_USERNAME']);
   $upass  = trim($_POST['U_PASS']);
-  $h_upass = sha1($upass);
   
    if ($email == '' OR $upass == '') { 
       message("Invalid Username and Password!", "error");
@@ -53,7 +51,7 @@ if(isset($_POST['sidebarLogin'])){
          
     } else {   
         $cus = new Customer();
-        $cusres = $cus::cusAuthentication($email,$h_upass);
+        $cusres = $cus::cusAuthentication($email, $upass);
 
         if ($cusres === true){
            if($_POST['proid']==''){
@@ -79,4 +77,3 @@ if(isset($_POST['sidebarLogin'])){
  ?> 
  
 
- 

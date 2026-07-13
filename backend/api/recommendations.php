@@ -12,7 +12,7 @@ foreach ($items as $p) {
         'name' => $p->PRODESC,
         'category' => $p->CATEGORIES,
         'price' => (float) $p->PRODISPRICE,
-        'image' => web_root . 'admin/products/' . $p->IMAGES,
+        'image' => product_image_url($p->IMAGES, $p->PRODESC),
         'url' => web_root . 'index.php?q=single-item&id=' . $p->PROID,
     ];
 }

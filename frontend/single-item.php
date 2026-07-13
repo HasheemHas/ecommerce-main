@@ -291,7 +291,7 @@ foreach ($cur as $result) {
             <!-- Left Side: Image Gallery + CTA Buttons -->
             <div class="col-md-6 col-sm-12">
                 <div class="product-gallery">
-                    <img src="<?php echo str_replace('frontend/', '', web_root) . 'admin/products/' . $result->IMAGES; ?>" alt="<?php echo htmlspecialchars($result->PRODESC); ?>" id="main-product-image">
+                    <img src="<?php echo htmlspecialchars(product_image_url($result->IMAGES, $result->PRODESC)); ?>" alt="<?php echo htmlspecialchars($result->PRODESC); ?>" id="main-product-image">
                 </div>
                 
                 <div class="action-buttons-group">
@@ -399,7 +399,7 @@ if (!empty($cur)) {
         <div class="col-md-3 col-sm-6 col-xs-12" style="margin-bottom: 20px;">
             <div style="background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 15px; text-align: center; height: 100%;">
                 <a href="index.php?q=single-item&id=<?php echo $result->PROID; ?>" style="display: block; margin-bottom: 10px;">
-                    <img src="<?php echo str_replace('frontend/', '', web_root) . 'admin/products/' . $result->IMAGES; ?>" alt="<?php echo htmlspecialchars($result->PRODESC); ?>" style="max-height: 120px; max-width: 100%; object-fit: contain;">
+                    <img src="<?php echo htmlspecialchars(product_image_url($result->IMAGES, $result->PRODESC)); ?>" alt="<?php echo htmlspecialchars($result->PRODESC); ?>" loading="lazy" style="max-height: 120px; max-width: 100%; object-fit: contain;">
                 </a>
                 <a href="index.php?q=single-item&id=<?php echo $result->PROID; ?>" style="font-weight: 700; color: #0c3c78; text-decoration: none; font-size: 14px; display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
                     <?php echo htmlspecialchars($result->PRODESC); ?>

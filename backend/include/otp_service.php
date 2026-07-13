@@ -137,10 +137,13 @@ class OtpService
         if (!$user) {
             return false;
         }
+        if (function_exists('session_regenerate_id')) {
+            session_regenerate_id(true);
+        }
         $_SESSION['CUSID'] = $user->CUSTOMERID;
         $_SESSION['CUSNAME'] = $user->FNAME . ' ' . $user->LNAME;
         $_SESSION['CUSUNAME'] = $user->CUSUNAME;
-        $_SESSION['CUSUPASS'] = $user->CUSPASS;
+        unset($_SESSION['CUSUPASS']);
         return true;
     }
 }

@@ -11,13 +11,15 @@ def get_db_config():
     env_user = os.environ.get('DB_USER')
     env_pass = os.environ.get('DB_PASS', '')
     env_db   = os.environ.get('DB_NAME')
+    env_port = int(os.environ.get('DB_PORT', '3306'))
 
     if env_host and env_user and env_db:
         return {
             'host':     env_host,
             'user':     env_user,
             'password': env_pass,
-            'database': env_db
+            'database': env_db,
+            'port': env_port
         }
 
     # --- LOCAL FALLBACK: parse PHP include/config.php ---
@@ -28,7 +30,8 @@ def get_db_config():
         'host':     'localhost',
         'user':     'root',
         'password': '',
-        'database': 'db_ecommerce'
+        'database': 'db_ecommerce',
+        'port': 3306
     }
 
     if os.path.exists(config_path):
@@ -58,6 +61,7 @@ def get_db_connection():
         user=cfg['user'],
         password=cfg['password'],
         database=cfg['database'],
+        port=cfg.get('port', 3306),
         cursorclass=pymysql.cursors.DictCursor,
         connect_timeout=10
     )

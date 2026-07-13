@@ -302,7 +302,7 @@ $total_categories = $mydb->loadSingleResult()->total;
                     $cur = $mydb->loadResultList();
 
                     foreach ($cur as $result) { 
-                        $img = web_root.'admin/products/'.$result->IMAGES;
+                        $img = product_image_url($result->IMAGES, $result->PRODESC);
                     ?>
                     <tr>
                         <td><input type="checkbox" name="selector[]" id="selector[]" value="<?php echo $result->PROID; ?>"/></td>

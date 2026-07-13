@@ -24,7 +24,7 @@ if (isset($_GET['query'])) {
             'name' => $row->PRODESC,
             'category' => $row->CATEGORIES,
             'price' => number_format($row->PRODISPRICE, 2),
-            'image' => str_replace('frontend/', '', web_root) . 'admin/products/' . $row->IMAGES
+            'image' => product_image_url($row->IMAGES, $row->PRODESC)
         ];
     }
     

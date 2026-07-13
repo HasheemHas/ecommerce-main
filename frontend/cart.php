@@ -373,7 +373,7 @@
                     ?>
                                 <div class="cart-item">
                                     <div class="item-image">
-                                        <img src="<?php echo str_replace('frontend/', '', web_root). 'admin/products/'.$result->IMAGES; ?>" alt="<?php echo $result->PRODESC; ?>">
+                                        <img src="<?php echo htmlspecialchars(product_image_url($result->IMAGES, $result->PRODESC)); ?>" alt="<?php echo htmlspecialchars($result->PRODESC); ?>" loading="lazy">
                                     </div>
 
                                     <div class="item-info">

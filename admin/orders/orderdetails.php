@@ -72,7 +72,7 @@
 
                          <tr>
                          <td></td>
-                          <td><img src="<?php echo web_root.'admin/modules/product/'.$result->IMAGES; ?>" onload="totalprice()" width="50px" height="50px"></td>
+                          <td><img src="<?php echo htmlspecialchars(product_image_url($result->IMAGES, $result->PRODUCTNAME)); ?>" onload="totalprice()" width="50" height="50" alt="<?php echo htmlspecialchars($result->PRODUCTNAME); ?>"></td>
                           <td><?php echo $result->PRODUCTNAME ?></td>
                           <td><?php echo $_SESSION['fixnmix_cart'][$i]['qty'] ?></td>
                           <td>₹ <?php echo  $result->PRICE ?></td>

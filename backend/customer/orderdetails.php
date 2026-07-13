@@ -640,7 +640,7 @@ $res = $autonumber->set_autonumber('ordernumber');
                             ?>
                                         <div class="summary-item-row">
                                             <div class="summary-item-img-box">
-                                                <img src="<?php echo str_replace('frontend/', '', web_root). 'admin/products/'.$result->IMAGES; ?>" class="summary-item-img">
+                                                <img src="<?php echo htmlspecialchars(product_image_url($result->IMAGES, $result->PRODESC)); ?>" class="summary-item-img" alt="<?php echo htmlspecialchars($result->PRODESC); ?>" loading="lazy">
                                             </div>
                                             <div class="summary-item-details">
                                                 <h3 class="summary-item-name"><?php echo $result->PRODESC; ?></h3>

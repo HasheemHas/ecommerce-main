@@ -16,11 +16,17 @@
 			// Global fix: Redirects to root index.php?q=... from backend lose parameters during routing.
 			// Rewrite to frontend/index.php?q=... to preserve the correct routing location.
 			if (strpos($location, 'index.php?') !== false && strpos($location, 'frontend/') === false && strpos($location, 'admin/') === false) {
-				$location = str_replace('index.php?', 'frontend/index.php?', $location);
+				$site_root = preg_replace('#frontend/?$#i', '', web_root);
+				$query = substr($location, strpos($location, 'index.php?') + strlen('index.php?'));
+				$location = rtrim($site_root, '/') . '/frontend/index.php?' . $query;
 			}
-			echo "<script>
-					window.location='{$location}'
-				</script>";	
+			if (!headers_sent()) {
+				header('Location: ' . $location, true, 302);
+				exit;
+			}
+			$location_json = json_encode($location, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT);
+			echo '<script>window.location.assign(' . $location_json . ');</script>';
+			exit;
 		}else{
 			echo 'error location';
 		}
@@ -103,10 +109,6 @@
 	// Multi-Language Helper
 	function t($text_key, $default_text = "") {
 		global $mydb;
-		if (!isset($mydb)) {
-			$mydb = new Database();
-		}
-		
 		$lang = isset($_SESSION['lang']) ? $_SESSION['lang'] : 'en';
 		if ($lang === 'en' && empty($default_text)) {
 			$default_text = str_replace('_', ' ', $text_key);
@@ -114,44 +116,67 @@
 		if (empty($default_text)) {
 			$default_text = $text_key;
 		}
-		
-		// Static Cache
-		static $translations_cache = [];
-		$cache_key = $lang . '_' . $text_key;
-		if (isset($translations_cache[$cache_key])) {
-			return $translations_cache[$cache_key];
+
+		// English is the source language. Returning it directly avoids a database
+		// query (and previously an INSERT) for every label rendered on every page.
+		if ($lang === 'en') {
+			return $default_text;
+		}
+
+		if (!isset($mydb)) {
+			$mydb = new Database();
 		}
 		
-		$text_key_esc = $mydb->escape_value($text_key);
-		$lang_esc = $mydb->escape_value($lang);
-		
-		$query = "SELECT `translated_text` FROM `translations_cache` WHERE `lang_code` = '{$lang_esc}' AND `text_key` = '{$text_key_esc}' LIMIT 1";
-		$mydb->setQuery($query);
-		$row = $mydb->loadSingleResult();
-		
-		if ($row) {
-			$translations_cache[$cache_key] = $row->translated_text;
-			return $row->translated_text;
-		}
-		
-		// Fallback to base translation if not found in Spanish/Arabic
-		if ($lang !== 'en') {
-			$query = "SELECT `translated_text` FROM `translations_cache` WHERE `lang_code` = 'en' AND `text_key` = '{$text_key_esc}' LIMIT 1";
-			$mydb->setQuery($query);
-			$en_row = $mydb->loadSingleResult();
-			if ($en_row) {
-				$translations_cache[$cache_key] = $en_row->translated_text;
-				return $en_row->translated_text;
+		// Load a language once per request instead of issuing one query per label.
+		static $translations_by_language = [];
+		if (!array_key_exists($lang, $translations_by_language)) {
+			$translations_by_language[$lang] = [];
+			$lang_esc = $mydb->escape_value($lang);
+			$mydb->setQuery("SELECT `text_key`, `translated_text` FROM `translations_cache` WHERE `lang_code` = '{$lang_esc}'");
+			foreach ($mydb->loadResultList() as $translation) {
+				$translations_by_language[$lang][$translation->text_key] = $translation->translated_text;
 			}
 		}
-		
-		// Register default string in cache if not exists
-		$def_esc = $mydb->escape_value($default_text);
-		$mydb->setQuery("INSERT IGNORE INTO `translations_cache` (`lang_code`, `text_key`, `translated_text`) VALUES ('{$lang_esc}', '{$text_key_esc}', '{$def_esc}')");
-		$mydb->executeQuery();
-		
-		$translations_cache[$cache_key] = $default_text;
-		return $default_text;
+
+		return isset($translations_by_language[$lang][$text_key])
+			? $translations_by_language[$lang][$text_key]
+			: $default_text;
+	}
+
+	/**
+	 * Build a product image URL from the path stored in tblproduct.IMAGES.
+	 * Real uploaded files are served directly. A cacheable generated SVG is used
+	 * when a migration references a file that is absent on an ephemeral server.
+	 */
+	function product_image_url($image_path, $product_name = '') {
+		$site_root = preg_replace('#frontend/?$#i', '', web_root);
+		$site_root = rtrim($site_root, '/') . '/';
+		$image_path = trim(str_replace('\\', '/', (string) $image_path));
+
+		if (preg_match('#^(?:https?:)?//#i', $image_path) || strpos($image_path, 'data:') === 0) {
+			return $image_path;
+		}
+
+		$image_path = ltrim($image_path, '/');
+		if (strpos($image_path, 'admin/products/') === 0) {
+			$relative_path = $image_path;
+		} elseif (strpos($image_path, 'uploaded_photos/') === 0) {
+			$relative_path = 'admin/products/' . $image_path;
+		} else {
+			$relative_path = 'admin/products/uploaded_photos/' . basename($image_path);
+		}
+
+		$disk_path = rtrim(server_root, '/\\') . DIRECTORY_SEPARATOR
+			. str_replace('/', DIRECTORY_SEPARATOR, $relative_path);
+		if ($image_path !== '' && is_file($disk_path)) {
+			return $site_root . implode('/', array_map('rawurlencode', explode('/', $relative_path)));
+		}
+
+		$params = ['image' => basename($image_path ?: 'product.jpg')];
+		if ($product_name !== '') {
+			$params['name'] = $product_name;
+		}
+		return $site_root . 'frontend/product-image.php?' . http_build_query($params);
 	}
 	
 	// Multi-Currency Converter Helper

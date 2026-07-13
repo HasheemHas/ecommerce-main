@@ -20,8 +20,13 @@ class Database {
 			// Disable strict mysqli exception throwing to handle connection failures gracefully
 			mysqli_report(MYSQLI_REPORT_OFF);
 			
-			$this->conn = @mysqli_connect(server,user,pass);
-			if(!$this->conn){
+			$this->conn = mysqli_init();
+			$connected = false;
+			if ($this->conn) {
+				mysqli_options($this->conn, MYSQLI_OPT_CONNECT_TIMEOUT, 5);
+				$connected = @mysqli_real_connect($this->conn, server, user, pass, null, database_port);
+			}
+			if(!$connected){
 				echo "Problem in database connection! Contact administrator!<br>";
 				if (defined('server')) {
 					echo "Could not connect to database server: " . htmlspecialchars(server) . "<br>";
@@ -34,6 +39,7 @@ class Database {
 					echo "Problem in selecting database! Contact administrator!";
 					exit();
 				}
+				@mysqli_set_charset($this->conn, 'utf8mb4');
 			}
 		} catch (\Throwable $t) {
 			echo "Problem in database connection! Contact administrator!<br>";

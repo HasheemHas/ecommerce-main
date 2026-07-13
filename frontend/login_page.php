@@ -433,12 +433,12 @@
         <!-- 2. Right Form Panel -->
         <div class="auth-right-panel">
             <h2 class="auth-right-brand">H-Mart</h2>
-            <p class="auth-right-subtitle">Sign in with a one-time code sent to your email.</p>
+            <p class="auth-right-subtitle">Sign in with your email or username and password.</p>
 
             <div id="otp-login-message" class="otp-alert"></div>
 
-            <!-- OTP Login (real-time, default) -->
-            <div id="loginOtpPanel">
+            <!-- OTP Login (optional when email delivery is configured) -->
+            <div id="loginOtpPanel" style="display:none;">
                 <label class="input-label" for="otp-login-email">Email address</label>
                 <div class="input-field-group">
                     <i class="fa fa-envelope-o input-field-icon"></i>
@@ -460,8 +460,8 @@
                 </div>
             </div>
 
-            <!-- Password login (optional) -->
-            <div id="loginPasswordPanel" style="display:none;">
+            <!-- Password login (default) -->
+            <div id="loginPasswordPanel">
             <form action="<?php echo web_root; ?>login.php" method="POST" autocomplete="on">
                 <label class="input-label" for="U_USERNAME">Email Address / Username</label>
                 <div class="input-field-group">
@@ -480,7 +480,7 @@
             </form>
             </div>
             <p class="login-tab-link">
-                <a href="javascript:void(0);" id="toggle-password-login">Use password instead</a>
+                <a href="javascript:void(0);" id="toggle-password-login">Use email code instead</a>
             </p>
 
             <!-- Redirection Link -->

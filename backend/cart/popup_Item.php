@@ -26,7 +26,7 @@ $query = "SELECT * FROM `tblpromopro` pr , `tblproduct` p , `tblcategory` c
             <div class="row">
                 <div class="col-m-12">
                     <div class="col-md-6 responsive">
-                          <img width="250" class="img-portfolio " height="200"  src="<?php echo web_root . 'admin/products/'.  $result->IMAGES;?>" alt="">
+                          <img width="250" class="img-portfolio " height="200" src="<?php echo htmlspecialchars(product_image_url($result->IMAGES, $result->PRODESC)); ?>" alt="<?php echo htmlspecialchars($result->PRODESC); ?>">
                
                     </div>
                     </div>
@@ -65,4 +65,3 @@ $query = "SELECT * FROM `tblpromopro` pr , `tblproduct` p , `tblcategory` c
  
  ?>    
 
- 

@@ -2,6 +2,13 @@
 from ai_microservice.utils.db import get_db_connection
 from datetime import datetime, timedelta
 import random
+from urllib.parse import urlencode
+
+def product_image_url(image, name=""):
+    return '/frontend/product-image.php?' + urlencode({
+        'image': (image or 'product.jpg').split('/')[-1],
+        'name': name or '',
+    })
 
 def generate_als_recommendations(customer_id: int, count: int = 5):
     conn = get_db_connection()
@@ -62,8 +69,8 @@ def generate_als_recommendations(customer_id: int, count: int = 5):
                     'name': item['PRODESC'],
                     'category': item['CATEGORIES'],
                     'price': float(item['PROPRICE']),
-                    'image': '/ecommerce/admin/products/' + item['IMAGES'],
-                    'url': '/ecommerce/index.php?q=single-item&id=' + str(item['PROID']),
+                    'image': product_image_url(item['IMAGES'], item['PRODESC']),
+                    'url': '/frontend/index.php?q=single-item&id=' + str(item['PROID']),
                     'score': score
                 })
                 
@@ -140,8 +147,8 @@ def generate_item_collaborative_recommendations(product_id: int, count: int = 3)
                     'name': item['PRODESC'],
                     'category': item['CATEGORIES'],
                     'price': float(item['PROPRICE']),
-                    'image': '/ecommerce/admin/products/' + item['IMAGES'],
-                    'url': '/ecommerce/index.php?q=single-item&id=' + str(item['PROID'])
+                    'image': product_image_url(item['IMAGES'], item['PRODESC']),
+                    'url': '/frontend/index.php?q=single-item&id=' + str(item['PROID'])
                 })
             return item_cf_list
     finally:
@@ -186,8 +193,8 @@ def generate_trending_products(count: int = 5):
                     'name': row['PRODESC'],
                     'category': row['CATEGORIES'],
                     'price': float(row['PROPRICE']),
-                    'image': '/ecommerce/admin/products/' + row['IMAGES'],
-                    'url': '/ecommerce/index.php?q=single-item&id=' + str(row['PROID']),
+                    'image': product_image_url(row['IMAGES'], row['PRODESC']),
+                    'url': '/frontend/index.php?q=single-item&id=' + str(row['PROID']),
                     'sold_count': row.get('quantity_sold', 0)
                 })
             return trending_list

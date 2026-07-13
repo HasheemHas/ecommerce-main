@@ -22,6 +22,10 @@ RUN a2enmod rewrite
 # Copy application files
 COPY . /var/www/html/
 
+# Ensure the upload target exists even when the repository has no uploaded
+# product files yet.
+RUN mkdir -p /var/www/html/admin/products/uploaded_photos
+
 # Install Python requirements in a virtual environment
 RUN python3 -m venv /opt/venv
 ENV PATH="/opt/venv/bin:$PATH"

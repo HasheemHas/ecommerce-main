@@ -22,17 +22,20 @@ if ($is_localhost) {
     defined('pass') ? null : define("pass", "");
     defined('database_name') ? null : define("database_name", "db_ecommerce");
 } else {
-    // Production environment (Clever Cloud Database)
-    $db_server = getenv('DB_HOST') ?: "buihalkspfwuvlu04ujx-mysql.services.clever-cloud.com";
-    $db_user   = getenv('DB_USER') ?: "umk0gm7jacsvymt8";
-    $db_pass   = getenv('DB_PASS') !== false ? getenv('DB_PASS') : "70FLmaThui6plsJdmxtD";
-    $db_name   = getenv('DB_NAME') ?: "buihalkspfwuvlu04ujx";
+    // Production credentials must be supplied by the hosting environment.
+    // Never keep live database passwords in the repository.
+    $db_server = getenv('DB_HOST') ?: "localhost";
+    $db_user   = getenv('DB_USER') ?: "root";
+    $db_pass   = getenv('DB_PASS') !== false ? getenv('DB_PASS') : "";
+    $db_name   = getenv('DB_NAME') ?: "db_ecommerce";
 
     defined('server') ? null : define("server", $db_server);
     defined('user') ? null : define("user", $db_user);
     defined('pass') ? null : define("pass", $db_pass);
     defined('database_name') ? null : define("database_name", $db_name);
 }
+
+defined('database_port') ? null : define('database_port', (int) (getenv('DB_PORT') ?: 3306));
 
 $this_file = str_replace('\\', '/', __File__) ;
 $doc_root = isset($_SERVER['DOCUMENT_ROOT']) ? str_replace('\\', '/', $_SERVER['DOCUMENT_ROOT']) : '';

@@ -180,7 +180,7 @@
 
         <div class="discount-details-grid">
             <div class="discount-image-wrapper">
-                <img src="<?php echo web_root . 'admin/products/'.  $result->IMAGES;?>" alt="Product Image" onerror="this.src='<?php echo web_root; ?>images/default.jpg'">
+                <img src="<?php echo htmlspecialchars(product_image_url($result->IMAGES, $result->PRODESC)); ?>" alt="<?php echo htmlspecialchars($result->PRODESC); ?>" loading="lazy">
             </div>
             <div>
                 <h4 style="margin:0 0 12px 0; font-weight:700; color:#0f172a; font-size:16px; text-align: left;"><?php echo htmlspecialchars($result->PRODESC); ?></h4>

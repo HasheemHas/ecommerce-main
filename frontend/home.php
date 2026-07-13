@@ -810,7 +810,7 @@
                         </div>
                         <div class="hero-graphic">
                             <div class="hero-img-wrapper">
-                                <img src="<?php echo str_replace('frontend/', '', web_root); ?>admin/products/uploaded_photos/custom_watch.png" class="hero-img" alt="Hmart Luxury Watch" />
+                                <img src="<?php echo htmlspecialchars(product_image_url('uploaded_photos/custom_watch.png', 'H-Mart Luxury Watch')); ?>" class="hero-img" alt="Hmart Luxury Watch" />
                             </div>
                         </div>
                     </div>
@@ -831,7 +831,7 @@
                         <div class="hero-graphic">
                             <div class="hero-img-wrapper" style="background: #e0f2fe;">
                                 <!-- Using one of the recently downloaded diverse images as a mockup -->
-                                <img src="<?php echo str_replace('frontend/', '', web_root); ?>admin/products/uploaded_photos/households_mock_2.jpg" class="hero-img" alt="Fresh Produce" onerror="this.src='<?php echo str_replace('frontend/', '', web_root); ?>admin/products/uploaded_photos/shoes_mock_1.jpg'" />
+                                <img src="<?php echo htmlspecialchars(product_image_url('uploaded_photos/households_mock_2.jpg', 'Fresh Produce')); ?>" class="hero-img" alt="Fresh Produce" />
                             </div>
                         </div>
                     </div>
@@ -850,7 +850,7 @@
                         </div>
                         <div class="hero-graphic">
                             <div class="hero-img-wrapper" style="background: #fef08a;">
-                                <img src="<?php echo str_replace('frontend/', '', web_root); ?>admin/products/uploaded_photos/shoes_mock_3.jpg" class="hero-img" alt="Shoes Collection" onerror="this.src='<?php echo str_replace('frontend/', '', web_root); ?>admin/products/uploaded_photos/shoes_mock_1.jpg'" />
+                                <img src="<?php echo htmlspecialchars(product_image_url('uploaded_photos/shoes_mock_3.jpg', 'Shoes Collection')); ?>" class="hero-img" alt="Shoes Collection" />
                             </div>
                         </div>
                     </div>
@@ -870,7 +870,7 @@
                         </div>
                         <div class="hero-graphic">
                             <div class="hero-img-wrapper" style="background: #ecfdf5;">
-                                <img src="<?php echo str_replace('frontend/', '', web_root); ?>admin/products/uploaded_photos/grocery_mock_1.jpg" class="hero-img" alt="Express Grocery" onerror="this.src='<?php echo str_replace('frontend/', '', web_root); ?>admin/products/uploaded_photos/grocery_mock_1.jpg'" />
+                                <img src="<?php echo htmlspecialchars(product_image_url('uploaded_photos/grocery_mock_1.jpg', 'Express Grocery')); ?>" class="hero-img" alt="Express Grocery" />
                             </div>
                         </div>
                     </div>
@@ -889,7 +889,7 @@
                         </div>
                         <div class="hero-graphic">
                             <div class="hero-img-wrapper" style="background: #fdf2f8;">
-                                <img src="<?php echo str_replace('frontend/', '', web_root); ?>admin/products/uploaded_photos/womens_mock_1.jpg" class="hero-img" alt="Alia Bhatt Couture" />
+                                <img src="<?php echo htmlspecialchars(product_image_url('uploaded_photos/womens_mock_1.jpg', 'Alia Bhatt Couture')); ?>" class="hero-img" alt="Alia Bhatt Couture" />
                             </div>
                         </div>
                     </div>
@@ -908,7 +908,7 @@
                         </div>
                         <div class="hero-graphic">
                             <div class="hero-img-wrapper" style="background: #eff6ff;">
-                                <img src="<?php echo str_replace('frontend/', '', web_root); ?>admin/products/uploaded_photos/mens_mock_1.jpg" class="hero-img" alt="Ranbir Kapoor Edit" />
+                                <img src="<?php echo htmlspecialchars(product_image_url('uploaded_photos/mens_mock_1.jpg', 'Ranbir Kapoor Edit')); ?>" class="hero-img" alt="Ranbir Kapoor Edit" />
                             </div>
                         </div>
                     </div>
@@ -991,7 +991,7 @@
                         <p class="cat-card-desc">Engineered for comfort and style</p>
                         <a href="index.php?q=product&category=SHOES" class="cat-card-btn">Explore</a>
                     </div>
-                    <img src="<?php echo str_replace('frontend/', '', web_root); ?>admin/products/uploaded_photos/custom_shoe.png" alt="Shoes Category" />
+                    <img src="<?php echo htmlspecialchars(product_image_url('uploaded_photos/custom_shoe.png', 'Premium Shoes')); ?>" alt="Shoes Category" loading="lazy" />
                 </div>
                 
                 <div class="category-card bags-card">
@@ -1000,7 +1000,7 @@
                         <p class="cat-card-desc">Premium luxury for every day</p>
                         <a href="index.php?q=product&category=BAGS" class="cat-card-btn">Explore</a>
                     </div>
-                    <img src="<?php echo str_replace('frontend/', '', web_root); ?>admin/products/uploaded_photos/custom_bag.png" alt="Bags Category" />
+                    <img src="<?php echo htmlspecialchars(product_image_url('uploaded_photos/custom_bag.png', 'Designer Bags')); ?>" alt="Bags Category" loading="lazy" />
                 </div>
                 
                 <div class="category-card clothing-card">
@@ -1038,7 +1038,7 @@
                     <a href="index.php?q=single-item&id=<?php echo (int) $result->PROID; ?>" style="text-decoration:none;color:inherit;display:block;">
                         <div class="prod-img-container">
                             <span class="badge-tag" style="background:#10b981; color:white; font-size:10px; font-weight:800; padding:4px 10px; border-radius:4px; position:absolute; top:12px; left:12px; z-index:5;"><i class="fa fa-bolt"></i> 10 MINS</span>
-                            <img src="<?php echo str_replace('frontend/', '', web_root).'admin/products/'.$result->IMAGES; ?>" class="prod-img" alt="<?php echo htmlspecialchars($result->PRODESC); ?>" />
+                            <img src="<?php echo htmlspecialchars(product_image_url($result->IMAGES, $result->PRODESC)); ?>" class="prod-img" alt="<?php echo htmlspecialchars($result->PRODESC); ?>" loading="lazy" />
                         </div>
                         <div class="prod-details">
                             <span class="prod-category">EXPRESS GROCERY</span>
@@ -1084,7 +1084,7 @@
                             <?php } elseif ($isSale) { ?>
                                 <span class="badge-tag badge-sale">Sale</span>
                             <?php } ?>
-                            <img src="<?php echo str_replace('frontend/', '', web_root).'admin/products/'.$result->IMAGES; ?>" class="prod-img" alt="<?php echo htmlspecialchars($result->PRODESC); ?>" />
+                            <img src="<?php echo htmlspecialchars(product_image_url($result->IMAGES, $result->PRODESC)); ?>" class="prod-img" alt="<?php echo htmlspecialchars($result->PRODESC); ?>" loading="lazy" />
                         </div>
                         <div class="prod-details">
                             <div>

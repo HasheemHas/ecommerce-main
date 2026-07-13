@@ -17,7 +17,7 @@
         <div class="col-md-4">
         <a data-target="#myModal" data-toggle="modal" href="" title=
             "Click here to Change Image.">
-            <img alt="" style="width:600px; height:400px;>" title="" class="img-circle img-thumbnail isTooltip" src="<?php echo $singleproduct->IMAGES; ?>" data-original-title="Usuario"> 
+            <img alt="<?php echo htmlspecialchars($singleproduct->PRODESC); ?>" style="width:600px; height:400px;" title="" class="img-circle img-thumbnail isTooltip" src="<?php echo htmlspecialchars(product_image_url($singleproduct->IMAGES, $singleproduct->PRODESC)); ?>" data-original-title="Product">
           
           </a>  
         </div>
@@ -126,4 +126,3 @@
             </div><!-- /.modal-dialog -->
           </div><!-- /.modal -->
 
- 

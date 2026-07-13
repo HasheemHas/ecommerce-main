@@ -54,7 +54,7 @@ function getProductCards($sqlQuery) {
                 'name' => $item->PRODESC,
                 'category' => isset($item->CATEGORIES) ? $item->CATEGORIES : 'Category',
                 'price' => (float)(isset($item->PRODISPRICE) ? $item->PRODISPRICE : (isset($item->PROPRICE) ? $item->PROPRICE : 0.0)),
-                'image' => str_replace('frontend/', '', web_root) . 'admin/products/' . $item->IMAGES,
+                'image' => product_image_url($item->IMAGES, $item->PRODESC),
                 'url' => web_root . 'index.php?q=single-item&id=' . $item->PROID
             ];
         }
@@ -175,7 +175,7 @@ if ($searchQuery !== null || $matchedCategory !== null || stripos($userMsg, 'pro
                     'name' => $item->PRODESC,
                     'category' => $item->CATEGORIES,
                     'price' => (float)$item->PRODISPRICE,
-                    'image' => str_replace('frontend/', '', web_root) . 'admin/products/' . $item->IMAGES,
+                    'image' => product_image_url($item->IMAGES, $item->PRODESC),
                     'url' => web_root . 'index.php?q=single-item&id=' . $item->PROID
                 ];
             }

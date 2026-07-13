@@ -56,7 +56,7 @@ if ($action === 'list') {
                     'name' => $item->PRODESC,
                     'price' => convert_price($item->PROPRICE),
                     'category' => $item->CATEGORIES,
-                    'image' => str_replace('frontend/', '', web_root) . 'admin/products/' . $item->IMAGES,
+                    'image' => product_image_url($item->IMAGES, $item->PRODESC),
                     'stock' => $item->PROQTY > 0 ? 'In Stock' : 'Out of Stock',
                     'ingredients' => $item->INGREDIENTS ? $item->INGREDIENTS : 'Standard Quality Ingredients'
                 ];

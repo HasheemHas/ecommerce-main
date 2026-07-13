@@ -94,7 +94,7 @@ check_message();
 
                                   <div class="column4">                                  
                                     <div style="float: left; width:90px">
-                                      <img src="admin/modules/product/<?php echo $result->IMAGES; ?>"  onload="  totalprice() " 
+                                      <img src="<?php echo htmlspecialchars(product_image_url($result->IMAGES, $result->PRODUCTNAME)); ?>" onload="totalprice()"
                                       width="50px" height="50px">
                                     </div>
                                      <input type="hidden" name="availqty" value="<?php echo $result->QTY; ?>">
@@ -153,4 +153,3 @@ check_message();
         </div>
         <?php require_once ('sidebar.php');?>
     </div> 
- 

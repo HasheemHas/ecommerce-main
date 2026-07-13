@@ -29,7 +29,7 @@
                   foreach ($cur as $result) {
                     echo '<tr>';
                     echo '<td width="5%" align="center"></td>';
-                    echo '<td> <a href=""><img src="'.web_root.'admin/modules/product/'. $result->IMAGES.'" width="60" height="60" title="'.$result->PRODUCTNAME.'"/></a></td>';
+                    echo '<td><a href=""><img src="' . htmlspecialchars(product_image_url($result->IMAGES, $result->PRODUCTNAME)) . '" width="60" height="60" title="' . htmlspecialchars($result->PRODUCTNAME) . '"/></a></td>';
                     echo '<td >' . $result->PRODUCTNAME.'</td>';
                     echo '<td align="center">'. $result->QTY.'</td>';
                     echo '<td align="center"> ₹ '. $result->PRICE.'</td>';
@@ -46,4 +46,3 @@
             </table>
             </div><br/>
            </form>
-       

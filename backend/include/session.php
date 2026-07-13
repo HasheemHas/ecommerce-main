@@ -1,5 +1,16 @@
 <?php
-session_start(); //before we store information of our member, we need to start first the session
+if (session_status() !== PHP_SESSION_ACTIVE) {
+  $is_https = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
+    || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && strtolower($_SERVER['HTTP_X_FORWARDED_PROTO']) === 'https');
+  session_set_cookie_params([
+    'lifetime' => 0,
+    'path' => '/',
+    'secure' => $is_https,
+    'httponly' => true,
+    'samesite' => 'Lax',
+  ]);
+  session_start();
+}
 	
 	//create a new function to check if the session variable member_id is on set
 	function logged_in() {

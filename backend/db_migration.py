@@ -3,13 +3,14 @@ import os
 import random
 import colorsys
 import pymysql
-from PIL import Image, ImageEnhance
+from PIL import Image, ImageDraw, ImageEnhance
 
 # Database connection credentials (reads from environment variables on Render, fallbacks to local XAMPP)
 DB_HOST = os.environ.get('DB_HOST', 'localhost')
 DB_USER = os.environ.get('DB_USER', 'root')
 DB_PASS = os.environ.get('DB_PASS', '')
 DB_NAME = os.environ.get('DB_NAME', 'db_ecommerce')
+DB_PORT = int(os.environ.get('DB_PORT', '3306'))
 
 # Dynamically determine the upload directory path (works on both local Windows and Render Linux)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -306,8 +307,18 @@ def generate_image_variant(cat_name, base_idx, product_idx, target_path):
     base_path = os.path.join(PHOTOS_DIR, base_file)
     
     if not os.path.exists(base_path):
-        print(f"  [WARN] Base image not found: {base_path}")
-        return False
+        # The repository intentionally does not carry thousands of raster
+        # assets. Generate a deterministic category card when no source photo
+        # was supplied, so every inserted IMAGES path still resolves to a file.
+        hue = (sum(ord(char) for char in cat_name) % 360) / 360.0
+        red, green, blue = colorsys.hsv_to_rgb(hue, 0.55, 0.82)
+        img = Image.new("RGB", (350, 350), (int(red * 255), int(green * 255), int(blue * 255)))
+        draw = ImageDraw.Draw(img)
+        draw.rounded_rectangle((70, 65, 280, 245), radius=24, outline="white", width=10)
+        draw.arc((120, 25, 230, 135), 180, 360, fill="white", width=10)
+        draw.text((28, 292), f"H-MART  {cat_name}", fill="white")
+        img.save(target_path, "JPEG", quality=85)
+        return True
         
     try:
         img = Image.open(base_path).convert("RGB")
@@ -367,6 +378,7 @@ def main():
             user=DB_USER,
             password=DB_PASS,
             database=DB_NAME,
+            port=DB_PORT,
             charset='utf8mb4',
             cursorclass=pymysql.cursors.DictCursor
         )
@@ -406,10 +418,15 @@ def main():
             cursor.execute("SELECT COUNT(*) as count FROM tblproduct WHERE PROID >= 300001")
             existing_count = cursor.fetchone()['count']
             if existing_count > 0:
+                if os.environ.get('MIGRATION_FORCE_RESEED', '0') != '1':
+                    print(f"Catalog already contains {existing_count} migrated products; leaving it unchanged.")
+                    print("Set MIGRATION_FORCE_RESEED=1 only when an intentional full reseed is required.")
+                    return
                 print(f"Removing {existing_count} previously migrated products and promos...")
                 cursor.execute("DELETE FROM tblpromopro WHERE PROID >= 300001")
                 cursor.execute("DELETE FROM tblproduct WHERE PROID >= 300001")
                 conn.commit()
+                start_proid = 300001
             
             # 3. Generate Products and Images
             products_to_insert = []

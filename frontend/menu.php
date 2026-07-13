@@ -553,7 +553,7 @@
                                     <?php } elseif ($isBest) { ?>
                                         <span class="badge-tag badge-bestseller">Best Seller</span>
                                     <?php } ?>
-                                    <img src="<?php echo str_replace('frontend/', '', web_root).'admin/products/'.$result->IMAGES; ?>" class="prod-img" alt="<?php echo htmlspecialchars($result->PRODESC); ?>" />
+                                    <img src="<?php echo htmlspecialchars(product_image_url($result->IMAGES, $result->PRODESC)); ?>" class="prod-img" alt="<?php echo htmlspecialchars($result->PRODESC); ?>" loading="lazy" />
                                 </div>
                                 <div class="prod-details">
                                     <div>

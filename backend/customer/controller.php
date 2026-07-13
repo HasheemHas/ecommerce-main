@@ -85,7 +85,7 @@ function doInsert(){
 		$customer->EMAILADD 		= $_POST['CUSUNAME'];
 		$customer->ZIPCODE 			= 0;
 		$customer->CUSUNAME			= $_POST['CUSUNAME'];
-		$customer->CUSPASS			= sha1($_POST['CUSPASS']);	
+		$customer->CUSPASS			= password_hash($_POST['CUSPASS'], PASSWORD_BCRYPT);
 		$customer->CUSPHOTO 		= '';
 		$customer->DATEJOIN 		= date('Y-m-d H:i:s');
 		$customer->TERMS 			= 1; // Auto-verified (no email verification required on InfinityFree)
@@ -120,7 +120,6 @@ function doInsert(){
 		 	$customer->PHONE 			= $_POST['PHONE'];
 			// $customer->ZIPCODE 			= $_POST['ZIPCODE']; 
 			$customer->CUSUNAME			= $_POST['CUSUNAME'];
-			// $customer->CUSPASS			= sha1($_POST['CUSPASS']);	
 			$customer->update($_SESSION['CUSID']);
 
 
@@ -388,7 +387,7 @@ function doInsert(){
 			if (isset($_POST['save'])) {
 				# code...
 				$customer = New Customer(); 
-				$customer->CUSPASS			= sha1($_POST['CUSPASS']);	
+				$customer->CUSPASS			= password_hash($_POST['CUSPASS'], PASSWORD_BCRYPT);
 				$customer->update($_SESSION['CUSID']);
 
 

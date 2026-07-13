@@ -17,7 +17,7 @@ if (!$p) {
 
 RecommendationEngine::trackView((int) $p->PROID, (int) $p->CATEGID);
 
-$imgUrl = str_replace('frontend/', '', web_root) . 'admin/products/' . $p->IMAGES;
+$imgUrl = product_image_url($p->IMAGES, $p->PRODESC);
 $rating = ($p->PROID % 3) + 3;
 $reviews = (($p->PROID * 7) % 300) + 15;
 $discount = ($p->ORIGINALPRICE > 0 && $p->PRODISPRICE < $p->ORIGINALPRICE)
@@ -212,7 +212,7 @@ body.dark-mode .pd-btn-cart:hover { background: #3b82f6 !important; color: white
             <div class="pd-related-grid">
                 <?php foreach ($related as $r) { ?>
                 <a href="index.php?q=single-item&id=<?php echo (int) $r->PROID; ?>" class="pd-related-card">
-                    <img src="<?php echo str_replace('frontend/', '', web_root) . 'admin/products/' . $r->IMAGES; ?>" alt="">
+                    <img src="<?php echo htmlspecialchars(product_image_url($r->IMAGES, $r->PRODESC)); ?>" alt="<?php echo htmlspecialchars($r->PRODESC); ?>" loading="lazy">
                     <div class="info">
                         <div class="name"><?php echo htmlspecialchars($r->PRODESC); ?></div>
                         <div class="price"><?php echo convert_price($r->PRODISPRICE); ?></div>

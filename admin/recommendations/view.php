@@ -37,7 +37,7 @@ if (is_array($recData) && !isset($recData['error'])) {
                 'name' => $row->PRODESC,
                 'category' => $row->CATEGORIES,
                 'price' => (float)$row->PROPRICE,
-                'image' => web_root . 'admin/products/' . $row->IMAGES,
+                'image' => product_image_url($row->IMAGES, $row->PRODESC),
                 'url' => 'index.php?q=single-item&id=' . $row->PROID,
                 'score' => (float)$row->score
             ];
@@ -68,7 +68,7 @@ if (is_array($trendingData) && !isset($trendingData['error'])) {
                 'name' => $row->PRODESC,
                 'category' => $row->CATEGORIES,
                 'price' => (float)$row->PROPRICE,
-                'image' => web_root . 'admin/products/' . $row->IMAGES,
+                'image' => product_image_url($row->IMAGES, $row->PRODESC),
                 'url' => 'index.php?q=single-item&id=' . $row->PROID,
                 'sold_count' => rand(5, 25)
             ];

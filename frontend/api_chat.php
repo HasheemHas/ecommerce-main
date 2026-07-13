@@ -143,7 +143,7 @@ if (!empty($matchedProducts)) {
             'name' => $p->PRODESC,
             'category' => $p->CATEGORIES,
             'price' => $price,
-            'image' => str_replace('frontend/', '', web_root) . 'admin/products/' . $p->IMAGES,
+            'image' => product_image_url($p->IMAGES, $p->PRODESC),
             'url' => web_root . 'index.php?q=single-item&id=' . $p->PROID
         ];
         $productsContext .= "- Name: \"{$p->PRODESC}\", Category: \"{$p->CATEGORIES}\", Price: ₹{$price}, ID: {$p->PROID}\n";

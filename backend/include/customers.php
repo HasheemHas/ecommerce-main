@@ -32,24 +32,39 @@ class Customer {
 		$row_count = $mydb->num_rows($cur);
 		return $row_count;
 	}
-	static function cusAuthentication($email,$h_pass){
+	static function cusAuthentication($email, $password){
 		global $mydb;
-		$mydb->setQuery("SELECT * FROM  ".self::$tblname."  WHERE `CUSUNAME` = '".$email."' and `CUSPASS` = '". $h_pass ."'");
-		$cur = $mydb->executeQuery();
-		if($cur==false){
-			die($mydb->error_msg);
+		$identifier = $mydb->escape_value(strtolower(trim($email)));
+		$mydb->setQuery("SELECT * FROM ".self::$tblname." WHERE LOWER(`CUSUNAME`) = '{$identifier}' OR LOWER(`EMAILADD`) = '{$identifier}' LIMIT 1");
+		$user_found = $mydb->loadSingleResult();
+		if (!$user_found) {
+			return false;
 		}
-		$row_count = $mydb->num_rows($cur);//get the number of count
-		 if ($row_count >= 1){
-			 $user_found = $mydb->loadSingleResult();
-		 	$_SESSION['CUSID']   		= $user_found->CUSTOMERID;
-		 	$_SESSION['CUSNAME']      	= $user_found->FNAME . ' ' .$user_found->LNAME;
-		 	$_SESSION['CUSUNAME'] 		= $user_found->CUSUNAME; 
-		 	$_SESSION['CUSUPASS'] 		= $user_found->CUSPASS; 
-		   return true;
-		 }else{
-		 	return false;
-		 }
+
+		$stored = (string) $user_found->CUSPASS;
+		$is_legacy_sha1 = preg_match('/^[a-f0-9]{40}$/i', $stored) === 1;
+		$valid = $is_legacy_sha1
+			? hash_equals(strtolower($stored), sha1($password))
+			: password_verify($password, $stored);
+		if (!$valid) {
+			return false;
+		}
+
+		// Transparently upgrade old SHA-1 accounts after a successful login.
+		if ($is_legacy_sha1) {
+			$new_hash = $mydb->escape_value(password_hash($password, PASSWORD_BCRYPT));
+			$mydb->setQuery("UPDATE ".self::$tblname." SET `CUSPASS`='{$new_hash}' WHERE `CUSTOMERID`=" . (int) $user_found->CUSTOMERID);
+			$mydb->executeQuery();
+		}
+
+		if (function_exists('session_regenerate_id')) {
+			session_regenerate_id(true);
+		}
+		$_SESSION['CUSID'] = $user_found->CUSTOMERID;
+		$_SESSION['CUSNAME'] = $user_found->FNAME . ' ' . $user_found->LNAME;
+		$_SESSION['CUSUNAME'] = $user_found->CUSUNAME;
+		unset($_SESSION['CUSUPASS']);
+		return true;
 	}
 	
 	 

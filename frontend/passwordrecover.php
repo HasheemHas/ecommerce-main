@@ -53,7 +53,7 @@
       		# code...
 
 			$customer = New Customer();   
-			$customer->CUSPASS			= sha1($_POST['newpassword']);	
+			$customer->CUSPASS			= password_hash($_POST['newpassword'], PASSWORD_BCRYPT);
 			$customer->update($res->CUSTOMERID);
 
       	}
